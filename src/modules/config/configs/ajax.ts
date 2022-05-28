@@ -1,3 +1,0 @@
-const mockConfig = {}
-
-export default {}

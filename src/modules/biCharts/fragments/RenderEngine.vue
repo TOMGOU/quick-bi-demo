@@ -9,7 +9,7 @@ const biCharts = namespace('biCharts')
 
 @Component({
   components: {
-    ...components,
+    // ...components,
     ...parsers
   },
 })
@@ -77,14 +77,14 @@ export default class RenderEngine extends Vue {
   handleDrop (event, vm) {
     const _json = vm.jsonSchema
 
-    if (_json && (_json.type.includes('Container') || _json.type.includes('Map'))) {
+    if (_json && (_json.type.includes('Container') || _json.type.includes('Map') || _json.type.includes('Box'))) {
       if (!_json.children) {
         this.$set(_json, 'children', [])
       }
       const uuid = uuidv4()
       _json.children.push({
         type: this.selectedType,
-        option: parsers[this.selectedType].option,
+        option: parsers[this.selectedType].options,
         uuid,
       })
 
@@ -103,6 +103,8 @@ export default class RenderEngine extends Vue {
   overflow: scroll;
   &::-webkit-scrollbar {
     width: 0 !important;
+    height: 0;
+    color: transparent;
   }
 }
 </style>

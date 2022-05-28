@@ -1,7 +1,7 @@
 <template>
   <div class="config">
     <!-- 顶栏 -->
-    <top-bar v-if="!isFullScreen" @handleFullScreen="handleFullScreen" />
+    <top-bar v-if="!isFullScreen" @handleFullScreen="handleFullScreen" @handleSave="handleSave" />
     <!-- 顶栏 -->
     <div class="config__main-content">
       <el-row>
@@ -10,14 +10,14 @@
           <material-stack />
           <!-- 物料堆 -->
         </el-col>
-        <el-col :span="isFullScreen ? 24 : 16">
+        <el-col :span="isFullScreen ? 25 : 17">
           <!-- 主舞台 -->
           <render-engine ref="engine"
             :jsonSchema.sync="jsonSchema"
           ></render-engine>
           <!-- 主舞台 -->
         </el-col>
-        <el-col :span="6" v-if="!isFullScreen">
+        <el-col :span="5" v-if="!isFullScreen">
           <!-- 配置面板 -->
           <div class="config-panel block">
             <config-panel
@@ -54,8 +54,8 @@ export default class PublicSession extends Vue {
   @Mutation('UPDATE_CRUMB') hideCrumb
   // 初始数据
   private jsonSchema: any = {
-    type: 'VerticalContainerParse',
-    uuid: '',
+    type: 'RootContainerParse',
+    uuid: 'root',
     option: {}
   }
 
@@ -114,6 +114,11 @@ export default class PublicSession extends Vue {
     this.updateNav(bool)
     this.hideCrumb(bool)
     this.isFullScreen = bool
+  }
+
+  async handleSave () {
+    const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.postChartsConfig({ data: JSON.stringify(this.jsonSchema) }) || {}
+    console.log({ id: data.id, value: this.jsonSchema })
   }
 }
 </script>

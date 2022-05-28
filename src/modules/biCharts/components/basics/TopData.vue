@@ -3,7 +3,7 @@
     <div class="top-data__container">
       <div v-for="item in copyData" :key="item.title" class="top-data__box">
         <div class="top-data__title" :style="{...cssStyle}">{{ item.title }}</div>
-        <div class="top-data__value">{{ item.amount }}</div>
+        <div class="top-data__value">{{ item.amount || '--' }}</div>
       </div>
     </div>
   </section>
@@ -69,6 +69,7 @@ export default class TopData extends Vue {
     line-height: 50px;
     font-size: 36px;
 	  color: #ffde81;
+    text-align: center;
   }
 }
 </style>

@@ -1,25 +1,26 @@
 import { Component, Vue } from 'vue-property-decorator';
-import HorizontalContainer from './HorizontalContainer.vue'
+import ChartBox from './ChartBox.vue'
 import store from '@/vuex/store'
 const option = {
+  title: '图表标题',
   cssStyle: {
-    width: '100vw',
-    height: 'calc(100vh - 100px)',
-    background: '#0c1022'
+    height: 'calc((100vh - 165px) / 3)'
   }
 }
+
 @Component({
   components: {
-    HorizontalContainer,
+    ChartBox,
   }
 })
-class HorizontalContainerParse extends Vue {
+class ChartBoxParse extends Vue {
   static option = option
 
   render (h, section, children) {
-    const _this = this
     const _props = {
       props: {
+        cssStyle: section.section.option.cssStyle,
+        title: section.section.option.title,
         jsonSchema: section.section
       }
     }
@@ -32,7 +33,7 @@ class HorizontalContainerParse extends Vue {
         click: (e) => {
           e.stopPropagation()
           store.dispatch('biCharts/setSelectedType', {
-            selectedType: 'HorizontalContainerParse'
+            selectedType: 'ChartBoxParse'
           })
           store.dispatch('biCharts/setUuid', {
             uuid: section.section.uuid,
@@ -41,15 +42,15 @@ class HorizontalContainerParse extends Vue {
       }
     }
     return (
-      <HorizontalContainer
+      <ChartBox
         { ..._props }
         { ..._propsOn }
-      >{ children }</HorizontalContainer>
+      >{ children }</ChartBox>
     )
   }
 }
 
 // @ts-ignore
-HorizontalContainerParse.des = '横向容器'
+ChartBoxParse.des = '图表框'
 
-export default HorizontalContainerParse
+export default ChartBoxParse

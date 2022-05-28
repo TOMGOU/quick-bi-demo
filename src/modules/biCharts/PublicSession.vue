@@ -1,33 +1,30 @@
 <template>
   <section class="public-session">
-    <top-title @handleFullScreen="handleFullScreen"></top-title>
+    <top-title @handleFullScreen="handleFullScreen" :sessionName="sessionName"></top-title>
     <div class="public-session__container">
       <div class="public-session__box">
-        <bar-line :option="option1"></bar-line>
-        <bar-line :option="option4" title="周成交趋势图"></bar-line>
-        <bar-line :option="option6" title="周毛利、毛利率趋势图"></bar-line>
+        <bar-line :option="option1" :loading="loading" title="日拍卖趋势图"></bar-line>
+        <bar-line :option="option4" :loading="loading" title="周成交趋势图"></bar-line>
+        <bar-line :option="option5" :loading="loading" title="月成交趋势图"></bar-line> 
       </div>
-      <!-- <chart class="public-session__map" :option="option2" :theme="theme" autoresize></chart> -->
-      <!-- <bar-line :option="option2"></bar-line> -->
       <div class="public-session__box">
-        <!-- <chart class="public-session__map" :option="option2" :theme="theme" autoresize></chart> -->
         <div class="public-session__map-box">
           <top-data :mapData="mapData"></top-data>
           <Map :option="option2"></Map>
           <map-tips :sessionName="sessionName" :sessionAuctions="sessionAuctions" :sessionAuctionRate="sessionAuctionRate"></map-tips>
-          <map-table :tableData="tableData" :sessionName="sessionName" @handleChangeSession="handleChangeSession"></map-table>
+          <map-table :tableData="tableData" :sessionName="sessionName" :bool="!!timer" @handleChangeSession="handleChangeSession" @handleTriggerAuto="handleTriggerAuto"></map-table>
         </div>
-        <bar-line :option="option7" title="车商活跃趋势图"></bar-line>
-      </div>
-      <div class="public-session__box">
-        <bar-line :option="option3" title="关闭订单及争议订单">
-          <div class="pie-title">
-            <div class="pie-title__close">关闭订单数 <span class="pie-title__hightlight">30单</span> | 同比增长 <span class="pie-title__hightlight">3.0%</span></div>
-            <div class="pie-title__dispute">争议订单数 <span class="pie-title__hightlight">30单</span> | 同比增长 <span class="pie-title__hightlight">5.0%</span></div>
+        <bar-line :option="option3" :loading="loading" title="关闭订单及争议订单">
+          <div class="pie-title" v-if="!loading">
+            <div class="pie-title__close">关单数 <span class="pie-title__hightlight">{{ closedOrder }}单</span> | 同比增长 <span class="pie-title__hightlight">{{ closedOrderGrowthRate }}%</span></div>
+            <div class="pie-title__dispute">争议数 <span class="pie-title__hightlight">{{ arguedOrder }}单</span> | 同比增长 <span class="pie-title__hightlight">{{ arguedOrderGrowthRate }}%</span></div>
           </div>
         </bar-line>
-        <bar-line :option="option5" title="月成交率趋势图"></bar-line>
-        <bar-line :option="option8" title="月毛利、毛利率趋势图"></bar-line>
+      </div>
+      <div class="public-session__box">
+        <bar-line :option="option6" :loading="loading" title="周毛利、毛利率趋势图"></bar-line>
+        <bar-line :option="option8" :loading="loading" title="月毛利、毛利率趋势图"></bar-line>
+        <bar-line :option="option7" :loading="loading" title="车商活跃趋势图"></bar-line>
       </div>
     </div>
   </section>
@@ -36,28 +33,32 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Mutation } from 'vuex-class'
+import Message from '@lx-frontend/wrap-element-ui/packages/singleMessage';
 import eCharts from 'vue-echarts'
 import * as echarts from 'echarts'
-import BarLine from './components/BarLine.vue'
-import TopTitle from './components/TopTitle.vue'
-import TopData from './components/TopData.vue'
-import MapTable from './components/MapTable.vue'
-import MapTips from './components/MapTips.vue'
-import Map from './components/Map.vue'
-const china = require('./map/copy.json')
+import BarLine from './components/charts/BarLine.vue'
+import TopTitle from './components/basics/TopTitle.vue'
+import TopData from './components/basics/TopData.vue'
+import MapTable from './components/basics/MapTable.vue'
+import MapTips from './components/basics/MapTips.vue'
+import Map from './components/charts/Map.vue'
+const china = require('./map/china.json')
 
 const myItemStyle = {
   normal: {
-    areaColor: 'rgba(255, 227, 144)',
-    color: "rgba(255, 227, 144)",
-    borderColor: "rgba(255, 227, 144)",
+    areaColor: '#ffde81', // #554E3E
+    color: "#ffde81",
+    borderColor: "#ffde81",
     borderWidth: 0,
     borderType: "solid",
-    // opacity: .3,
     label: { show: false }
   },
   emphasis: {
-    areaColor: 'rgba(255, 227, 144)',
+    areaColor: '#ffde81',
+    color: "#ffde81",
+    borderColor: "#ffde81",
+    borderWidth: 0,
+    borderType: "solid",
     label: { show: false }
   },
 }
@@ -76,13 +77,15 @@ const myItemStyle = {
 export default class PublicSession extends Vue {
   @Mutation('UPDATE_NAV') updateNav
   @Mutation('UPDATE_CRUMB') hideCrumb
+  private counter = 30000
   private fontSize = 12
   private timer = null
+  private loading = true
   private currentIndex = 0
-  private sessionName = '河南专场'
-  private sessionAuctions = 5000
-  private sessionAuctionRate = '70.0%'
-  private mapHLData = [{ name: '河南省', value: 40689, itemStyle: myItemStyle }]
+  private sessionName = '--'
+  private sessionAuctions = 0
+  private sessionAuctionRate = '0%'
+  private mapHLData = []
   private option1: any = {}
   private option2: any = {}
   private option3: any = {}
@@ -95,50 +98,55 @@ export default class PublicSession extends Vue {
   private mapData: any = [
     {
       title: '今日上拍量',
-      value: 2000
+      value: 0
     },
     {
       title: '今日店均上拍量',
-      value: 35
+      value: 0
     },
     {
       title: '本月上拍台数',
-      value: 6000
+      value: 0
     },
     {
       title: '本月店均成交台数',
-      value: 860
+      value: 0
     },
   ]
   private tableData: any = [
     {
-      store_name: '经销店1',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
     {
-      store_name: '经销店2',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
     {
-      store_name: '经销店3',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
     {
-      store_name: '经销店4',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
     {
-      store_name: '经销店5',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
   ]
+  private sessions = []
+  private closedOrder = 0
+  private closedOrderGrowthRate = '--'
+  private arguedOrder = 0
+  private arguedOrderGrowthRate = '--'
 
-  mounted () {
+  async mounted () {
     this.setFontSize()
     this.initOption1()
     this.initOption2()
@@ -148,16 +156,27 @@ export default class PublicSession extends Vue {
     this.initOption6()
     this.initOption7()
     this.initOption8()
-    // 绑定全屏监听事件
-    window.addEventListener('fullscreenchange', e => {
-      this.handleScreenChange()
-    })
-    window.onresize = () => {
-      this.setFontSize()
-    }
-    this.timer = setInterval(() => {
-      this.handleChangeSession(true)
-    }, 3000)
+    // await this.fetchData()
+    // this.timer = setInterval(this.fetchData, 60000)
+    // this.handleSetTimer()
+  }
+
+  async fetchData () {
+    this.sessions = await this.getPublicSession()
+      // 此处判断 sessions 长度，防止获取公开场次的时候，登录态刚好过期
+      // 因此，刚好碰到登录态过期，场次切换将会被延迟一分钟切换
+      if (this.sessions.length) {
+        this.handleChangeSession(true)
+      }
+  }
+
+  /**
+   * 获取公开场次
+   */
+  async getPublicSession () {
+    const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.getPublicSession() || {}
+    if (code !== 0) return []
+    return data.session_tmpls
   }
 
   /**
@@ -171,11 +190,8 @@ export default class PublicSession extends Vue {
    * 页面销毁事件
    */
   destroyed () {
-    // 解除全屏监听事件
-    window.removeEventListener('fullscreenchange', e => {
-      this.handleScreenChange()
-    })
     clearInterval(this.timer)
+    this.timer = null
   }
 
   /**
@@ -183,26 +199,14 @@ export default class PublicSession extends Vue {
    */
   handleFullScreen () {
     if (!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement)) {
-      const video = document.documentElement as any;
-      const rfs = video.requestFullscreen || video.webkitRequestFullScreen || video.mozRequestFullScreen || video.msRequestFullscreen;
-      rfs.call(video);
+      const docs = document.documentElement as any;
+      const rfs = docs.requestFullscreen || docs.webkitRequestFullScreen || docs.mozRequestFullScreen || docs.msRequestFullscreen;
+      rfs.call(docs);
+      this.toggleNavCrumb(true)
     } else {
       const rfs = document.exitFullscreen || document.msExitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen;
       rfs.call(document);
-    }
-  }
-
-  /**
-   * 全屏监听函数
-   */
-  handleScreenChange () {
-    const isFullscreen = !(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement)
-    if (isFullscreen) {
-      // 退出全屏
       this.toggleNavCrumb(false)
-    } else {
-      // 全屏显示
-      this.toggleNavCrumb(true)
     }
   }
 
@@ -217,150 +221,146 @@ export default class PublicSession extends Vue {
   /**
    * 场次切换
    */
-  handleChangeSession (bool) {
-    const test = [
-      {
-        name: '河南专场',
-        value: 5000,
-        rate: '70%',
-        province: ['河南省']
-      },
-      {
-        name: '华南专场',
-        value: 5000,
-        rate: '70%',
-        province: ['广东省', '广西壮族自治区', '四川省', '湖南省', '贵州省', '重庆市', '海南省']
-      },
-      {
-        name: '华北专场',
-        value: 5000,
-        rate: '70%',
-        province: ['湖北省', '江西省', '山东省', '河北省', '山西省', '陕西省', '甘肃省', '宁夏回族自治区', '内蒙古自治区']
-      },
-      {
-        name: '华西专场',
-        value: 5000,
-        rate: '70%',
-        province: ['云南省', '新疆维吾尔自治区', '西藏自治区', '青海省']
-      },
-      {
-        name: '华东专场',
-        value: 5000,
-        rate: '70%',
-        province: ['浙江省', '福建省', '安徽省', '江苏省', '上海市']
-      }
-    ]
-    const len = test.length
-    this.currentIndex = bool ? (this.currentIndex + 1) % len : (this.currentIndex - 1 + len) % len
-    this.sessionName = test[this.currentIndex].name
-    this.sessionAuctions = +(Math.random() * 5000).toFixed(0) + 1000
-    this.sessionAuctionRate = (Math.random() * 100).toFixed(1) + '%'
+  async handleChangeSession (bool) {
+    const lens = this.sessions.length
+    this.currentIndex = bool ? (this.currentIndex + 1) % lens : (this.currentIndex - 1 + lens) % lens
+    this.sessionName = this.sessions[this.currentIndex].name
+    
+    const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.getPublicSessionData({ id: this.sessions[this.currentIndex].id }) || {}
+    if (code !== 0) return
+
     // 中央地图数据更新
-    this.option2.series[0].data = test[this.currentIndex].province.map(item => ({name: item, itemStyle: myItemStyle}))
+    this.sessionAuctions = data.global_auctions.session_auctions
+    this.sessionAuctionRate = data.global_auctions.session_auction_rate + '%'
+    this.option2.series[0].data = data.global_auctions.provinces.map(item => ({name: item, itemStyle: myItemStyle}))
     this.mapData = [
       {
         title: '今日上拍量',
-        value: +(Math.random() * 10000).toFixed(0) + 5000
+        value: data.global_auctions.today_auctions
       },
       {
         title: '今日店均上拍量',
-        value: +(Math.random() * 100).toFixed(0) + 10
+        value: data.global_auctions.today_auctions_per_store
       },
       {
         title: '本月上拍台数',
-        value: +(Math.random() * 5000).toFixed(0) + 1000
+        value: data.global_auctions.month_auctions
       },
       {
         title: '本月店均成交台数',
-        value: +(Math.random() * 3000).toFixed(0) + 1000
+        value: data.global_auctions.month_transactions_per_store
       },
     ]
-    this.tableData = [
-      {
-        store_name: '经销店1',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-      {
-        store_name: '经销店2',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-      {
-        store_name: '经销店3',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-      {
-        store_name: '经销店4',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-      {
-        store_name: '经销店5',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-    ]
+    this.tableData = data.global_auctions.top5
 
     // 日拍趋势图数据更新
-    this.option1.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option1.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option1.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option1.xAxis.data = data.daily_auctions_trend.dates
+    this.option1.series[0].data = data.daily_auctions_trend.auctions
+    this.option1.series[1].data = data.daily_auctions_trend.solds
+    this.option1.series[2].data = data.daily_auctions_trend.sold_rates
 
     // 关闭订单及争议订单图数据更新
-    this.option3.series[0].data[0].value = (Math.random() * 100).toFixed(0)
+    this.closedOrder = data.closed_and_argued_orders.closed_order.total
+    this.closedOrderGrowthRate = data.closed_and_argued_orders.closed_order.growth_rate
+    this.arguedOrder = data.closed_and_argued_orders.argued_order.total
+    this.arguedOrderGrowthRate = data.closed_and_argued_orders.argued_order.growth_rate
+    this.option3.series[0].data[0].value = data.closed_and_argued_orders.closed_order.closed_rate
     this.option3.series[1].data = [
-      {value: (Math.random() * 50).toFixed(0), name: '处理中'},
-      {value: (Math.random() * 50).toFixed(0), name: '支持经销店'},
-      {value: (Math.random() * 50).toFixed(0), name: '支持车商'},
+      {value: data.closed_and_argued_orders.argued_order.in_process_orders, name: '处理中'},
+      {value: data.closed_and_argued_orders.argued_order.support_dealer_orders, name: '支持车商'},
+      {value: data.closed_and_argued_orders.argued_order.support_store_orders, name: '支持经销店'},
     ]
 
     // 周成交趋势图数据更新
-    this.option4.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option4.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option4.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option4.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option4.xAxis.data = data.weekly_transactions_trend.dates
+    this.option4.series[0].data = data.weekly_transactions_trend.auctions
+    this.option4.series[1].data = data.weekly_transactions_trend.solds
+    this.option4.series[2].data = data.weekly_transactions_trend.transactions
+    this.option4.series[3].data = data.weekly_transactions_trend.transaction_rates
 
     // 月成交率趋势图数据更新
-    this.option5.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option5.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option5.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option5.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option5.xAxis.data = data.monthly_transactions_trend.dates
+    this.option5.series[0].data = data.monthly_transactions_trend.auctions
+    this.option5.series[1].data = data.monthly_transactions_trend.solds
+    this.option5.series[2].data = data.monthly_transactions_trend.matches
+    this.option5.series[3].data = data.monthly_transactions_trend.transaction_rates
 
     // 周毛利、毛利率趋势图数据更新
-    this.option6.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option6.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option6.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option6.xAxis.data = data.weekly_gross_profit_and_rate_trend.dates
+    this.option6.series[0].data = data.weekly_gross_profit_and_rate_trend.gross_profits
+    this.option6.series[1].data = data.weekly_gross_profit_and_rate_trend.gross_profit_rates
+    this.option6.series[2].data = data.weekly_gross_profit_and_rate_trend.month_gross_profit_rates
 
     // 车商活跃趋势图数据更新
-    this.option7.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option7.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option7.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option7.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option7.series[4].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option7.xAxis.data = data.dealers_activity_trend.dates
+    this.option7.series[0].data = data.dealers_activity_trend.monthly_visitors
+    this.option7.series[1].data = data.dealers_activity_trend.monthly_participants
+    this.option7.series[2].data = data.dealers_activity_trend.monthly_bidders
+    this.option7.series[3].data = data.dealers_activity_trend.weekly_visitors
+    this.option7.series[4].data = data.dealers_activity_trend.weekly_participants
+    this.option7.series[5].data = data.dealers_activity_trend.weekly_bidders
 
     // 月成交率趋势图数据更新
-    this.option8.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option8.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option8.yAxis.data = data.monthly_gross_profit_and_rate_trend.dates
+    this.option8.series[0].data = data.monthly_gross_profit_and_rate_trend.gross_profits
+    this.option8.series[1].data = data.monthly_gross_profit_and_rate_trend.gross_profit_rates
+
+    // 关闭 loading 效果
+    this.loading = false
+  }
+
+  /**
+   * 场次自动切换暂停和开启操作
+   */
+  handleTriggerAuto() {
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+    } else {
+      this.handleSetTimer()
+    }
+  }
+
+  /**
+   * 当为公开场时，定时器间隔时间为 60 秒，其他场次为 30 秒
+   */
+  async handleSetTimer() {
+    clearTimeout(this.timer)
+    await this.fetchData()
+    console.log({id: this.sessions[this.currentIndex].id, counter: this.counter})
+    this.counter = this.sessions[this.currentIndex].id ? 30000 : 60000
+    this.timer = setTimeout(this.handleSetTimer, this.counter)
   }
 
   /**
    * 日拍趋势图
    */
   initOption1 () {
-    const colors = ['#0cf9ff', '#0cf9ff', '#fff'];
+    const colors = ['#0CF9FF', '#ff5a5a', '#ffc148'];
     this.option1 = {
       color: colors,
+      tooltip: {
+        trigger: 'item'
+      },
       grid: [{
         left: '10%',
         bottom: '15%',
         top: '30%',
-        right: '12%'
+        right: '4%'
       }],
       xAxis: {
         type: 'category',
         data: ['11.19', '11.20', '11.21', '11.22', '11.23', '11.24', '11.25'],
+        axisTick: {
+          lineStyle: {
+            color: 'transparent',
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: "rgba(255, 255, 255, .6)"
+          }
+        },
         axisLabel: {
           textStyle: {
             fontSize: this.fontSize
@@ -371,6 +371,11 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'left',
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
           axisLabel: {
             textStyle: {
               fontSize: this.fontSize
@@ -386,7 +391,13 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'right',
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
           axisLabel: {  
+            show: false,
             formatter: '{value}%',
             textStyle: {
               fontSize: this.fontSize
@@ -395,7 +406,11 @@ export default class PublicSession extends Vue {
         }
       ],
       legend: {
-        data: ['上拍台次', '拍出台次', '台次拍出率'],
+        data: [
+          { name: '上拍台次', icon: 'rect' }, 
+          { name: '拍出台次', icon: 'rect' }, 
+          { name: '台次拍出率' }, 
+        ],
         textStyle: {
           color: '#fff',
           fontSize: this.fontSize
@@ -450,11 +465,15 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
-              fontSize: 14,
-              color: '#ffc148'
+              fontSize: this.fontSize,
+              color: '#ffc148',
+              textShadowColor: '#000',
+              textShadowBlur: 4,
+              textShadowOffsetX: 1,
+              textShadowOffsetY: 1
             },
           },
         }
@@ -473,20 +492,27 @@ export default class PublicSession extends Vue {
         show: true,
         map: 'CHINA',
         label: {
-          show: false
+          normal: {
+            show: false
+          },
+          emphasis: {
+            show: false
+          }
         },
         selectedMode: false,
         roam: false,
         itemStyle: {
           normal: {
             borderWidth: 4, //设置外层边框
-            borderColor: '#0cf9ff',
-            areaColor: '#ffe390',
+            borderColor: '#0CF9FF',
+            areaColor: '#100B2A',
+            label: { show: false }
           },
           emphasis: {
             borderWidth: 4,
-            borderColor: '#0cf9ff',
-            areaColor: '#ffe390',
+            borderColor: '#0CF9FF',
+            areaColor: '#100B2A',
+            label: { show: false }
           }
         }
       },
@@ -501,48 +527,15 @@ export default class PublicSession extends Vue {
           selectedMode: false,
           itemStyle: {
             normal: {
-              areaColor: '#0c1022',
+              areaColor: '#100B2A',
               label: { show: false }
             },
             emphasis: {
-              areaColor: '#0c1022',
+              areaColor: '#100B2A',
               label: { show: false }
             },
           },
           data: this.mapHLData
-          // data: [
-          //     // {name: '广东省', value: 20057, itemStyle: myItemStyle},
-          //     // {name: '广西省', value: 15477, itemStyle: myItemStyle},
-          //     // {name: '湖南省', value: 31686, itemStyle: myItemStyle},
-          //     // {name: '湖北省', value: 6992, itemStyle: myItemStyle},
-          //     // {name: '四川省', value: 44045, itemStyle: myItemStyle},
-          //     {name: '河南省', value: 40689, itemStyle: myItemStyle},
-          //     // {name: '江西省', value: 37659, itemStyle: myItemStyle},
-          //     // {name: '福建省', value: 45180, itemStyle: myItemStyle},
-          //     // {name: '青海省', value: 55204, itemStyle: myItemStyle},
-          //     // {name: '西藏自治区', value: 21900, itemStyle: myItemStyle},
-          //     // {name: '新疆维吾尔自治区', value: 4918, itemStyle: myItemStyle},
-          //     // {name: '内蒙古自治区', value: 5881, itemStyle: myItemStyle},
-          //     // {name: '广西壮族自治区', value: 5881, itemStyle: myItemStyle},
-          //     // {name: '宁夏回族自治区', value: 5881, itemStyle: myItemStyle},
-          //     // {name: '云南省', value: 4178, itemStyle: myItemStyle},
-          //     // {name: '安徽省', value: 2227, itemStyle: myItemStyle},
-          //     // {name: '浙江省', value: 2180, itemStyle: myItemStyle},
-          //     // {name: '山东省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '黑龙江省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '江苏省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '贵州省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '吉林省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '辽宁省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '河北省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '甘肃省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '山西省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '海南省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '台湾省', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '天津市', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '北京市', value: 9172, itemStyle: myItemStyle},
-          //     // {name: '上海市', value: 9172, itemStyle: myItemStyle},
-          // ],
         }
       ]
     };
@@ -558,29 +551,30 @@ export default class PublicSession extends Vue {
     },
     legend: {
       // orient: 'horizontal',
-      top: '43%',
-      left: '65%',
+      top: '44%',
+      left: '83%',
       icon: "circle",
       itemWidth: 10,
       itemHeight: 10,
       itemGap: 10,
       width: 10,
       textStyle: {
-        fontSize: 8
+        color: '#fff',
+        fontSize: this.fontSize
       },
     },
     series: [
       {
         type: 'gauge',
         center: ['25%', '60%'],
-        radius: '65%',
+        radius: '70%',
         axisLine: {
           lineStyle: {
-            width: 30,
+            width: 15,
             color: [
-              [0.3, '#67e0e3'],
-              [0.7, '#37a2da'],
-              [1, '#fd666d']
+              [0.3, '#0CF9FF'],
+              [0.7, '#4992ff'],
+              [1, '#ff5a5a']
             ]
           }
         },
@@ -590,39 +584,39 @@ export default class PublicSession extends Vue {
           }
         },
         axisTick: {
-          distance: -30,
+          distance: -15,
           length: 8,
           lineStyle: {
             color: '#fff',
-            width: 2
+            width: 1
           }
         },
         splitLine: {
-          distance: -30,
-          length: 30,
+          distance: -15,
+          length: 15,
           lineStyle: {
             color: '#fff',
-            width: 4
+            width: 1
           }
         },
         axisLabel: {
           color: 'auto',
-          distance: 40,
-          fontSize: 4
+          distance: 20,
+          fontSize: 6
         },
         title: {
           show : true,
           offsetCenter: [0, '75%'],
           textStyle: {
-            fontSize: 14,
+            fontSize: this.fontSize,
             color: '#ff5a5a'
           }
         },
         detail: {
           valueAnimation: true,
-          formatter: '{value}%',
+          formatter: value => value === 0 ? `${value}%` : `${value.toFixed(1)}%`,
           textStyle:{
-            fontSize: 14,
+            fontSize: this.fontSize,
             color: '#ff5a5a'
           },
           offsetCenter: [0, "50%"],
@@ -635,26 +629,38 @@ export default class PublicSession extends Vue {
       {
         name: '争议订单',
         type: 'pie',
-        center: ['72%', '60%'],
-        radius: ['45%', '65%'],
+        center: ['68%', '60%'],
+        radius: ['35%', '70%'],
+        color: ['#ffc148', '#4992ff', '#0CF9FF'],
         data: [
-          {value: 10, name: '处理中'},
-          {value: 5, name: '支持经销店'},
-          {value: 10, name: '支持车商'},
+          {
+            value: 10, 
+            name: '处理中'
+          },
+          {
+            value: 5,
+            name: '支持经销店'
+          },
+          {
+            value: 10,
+            name: '支持车商'
+          },
         ],
         itemStyle: {
           color: '#ff5a5a',
           normal: {
             label: {
               textStyle: {
-                color: '#fff'
+                color: '#000',
               }
             }
           },
         },
         label: {
+          show: true,
+          color: '#fff',
           normal: {
-            formatter: '{d}% ',
+            formatter: '{c}',
             position:'inside'
           },
           itemStyle: {
@@ -670,18 +676,31 @@ export default class PublicSession extends Vue {
    * 周成交趋势图
    */
   initOption4 () {
-    const colors = ['#0cf9ff', '#0cf9ff', '#fff'];
+    const colors = ['#0CF9FF', '#ff5a5a', '#ffc148', '4992ff'];
     this.option4 = {
       color: colors,
+      tooltip: {
+        trigger: 'item'
+      },
       grid: [{
         left: '10%',
         bottom: '15%',
         top: '30%',
-        right: '12%'
+        right: '4%'
       }],
       xAxis: {
         type: 'category',
         data: ['10.14-10.20', '10.21-10.27', '10.28-11.04', '11.04-11.11'],
+        axisTick: {
+          lineStyle: {
+            color: 'transparent',
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: "rgba(255, 255, 255, .8)"
+          }
+        },
         axisLabel: {
           textStyle: {
             fontSize: this.fontSize
@@ -692,6 +711,11 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'left',
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
           axisLabel: {
             textStyle: {
               fontSize: this.fontSize
@@ -707,7 +731,13 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'right',
-          axisLabel: {  
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
+          axisLabel: {
+            show: false,
             formatter: '{value}%',
             textStyle: {
               fontSize: this.fontSize
@@ -716,7 +746,12 @@ export default class PublicSession extends Vue {
         }
       ],
       legend: {
-        data: ['上拍台数', '拍出台数', '成交台数', '成交率'],
+        data: [
+          { name: '上拍台数', icon: 'rect' }, 
+          { name: '拍出台数', icon: 'rect' }, 
+          { name: '成交台数', icon: 'rect' }, 
+          { name: '成交率' }, 
+        ],
         textStyle: {
           color: '#fff',
           fontSize: this.fontSize
@@ -785,11 +820,11 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
-              fontSize: 14,
-              color: '#4992ff'
+              fontSize: this.fontSize,
+              color: '#4992ff',
             },
           },
         }
@@ -801,18 +836,31 @@ export default class PublicSession extends Vue {
    * 月成交率趋势图
    */
   initOption5 () {
-    const colors = ['#0cf9ff', '#0cf9ff', '#fff'];
+    const colors = ['#0CF9FF', '#ff5a5a', '#ffc148', '#4992ff'];
     this.option5 = {
       color: colors,
+      tooltip: {
+        trigger: 'item'
+      },
       grid: [{
         left: '10%',
         bottom: '15%',
         top: '30%',
-        right: '12%'
+        right: '4%'
       }],
       xAxis: {
         type: 'category',
         data: ['8月', '9月', '10月', '11月'],
+        axisTick: {
+          lineStyle: {
+            color: 'transparent',
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: "rgba(255, 255, 255, .8)"
+          }
+        },
         axisLabel: {
           textStyle: {
             fontSize: this.fontSize
@@ -823,6 +871,11 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'left',
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
           axisLabel: {
             textStyle: {
               fontSize: this.fontSize
@@ -838,7 +891,13 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'right',
-          axisLabel: {  
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
+          axisLabel: {
+            show: false,
             formatter: '{value}%',
             textStyle: {
               fontSize: this.fontSize
@@ -847,7 +906,12 @@ export default class PublicSession extends Vue {
         }
       ],
       legend: {
-        data: ['上拍台数', '拍出台数', '撮合台数', '成交率'],
+        data: [
+          { name: '上拍台数', icon: 'rect' }, 
+          { name: '拍出台数', icon: 'rect' }, 
+          { name: '撮合台数', icon: 'rect' }, 
+          { name: '成交率' },
+        ],
         textStyle: {
           color: '#fff',
           fontSize: this.fontSize
@@ -922,11 +986,11 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
-              fontSize: 14,
-              color: '#4992ff'
+              fontSize: this.fontSize,
+              color: '#4992ff',
             },
           },
         }
@@ -938,18 +1002,31 @@ export default class PublicSession extends Vue {
    * 周毛利、毛利率趋势图
    */
   initOption6 () {
-    const colors = ['#0cf9ff', '#0cf9ff', '#fff'];
+    const colors = ['#0CF9FF', '#ff5a5a', '#ff5a5a'];
     this.option6 = {
       color: colors,
+      tooltip: {
+        trigger: 'item'
+      },
       grid: [{
         left: '10%',
         bottom: '15%',
         top: '30%',
-        right: '12%'
+        right: '4%'
       }],
       xAxis: {
         type: 'category',
         data: ['10.14-10.20', '10.21-10.27', '10.28-11.04', '11.04-11.11'],
+        axisTick: {
+          lineStyle: {
+            color: 'transparent',
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: "rgba(255, 255, 255, .8)"
+          }
+        },
         axisLabel: {
           textStyle: {
             fontSize: this.fontSize
@@ -960,6 +1037,11 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'left',
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
           axisLabel: {
             textStyle: {
               fontSize: this.fontSize
@@ -975,7 +1057,13 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'right',
-          axisLabel: {  
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
+          axisLabel: {
+            show: false,
             formatter: '{value}%',
             textStyle: {
               fontSize: this.fontSize
@@ -984,7 +1072,11 @@ export default class PublicSession extends Vue {
         }
       ],
       legend: {
-        data: ['毛利', '毛利率', '月毛利率'],
+        data: [
+          { name: '毛利', icon: 'rect' }, 
+          { name: '毛利率' },
+          { name: '月毛利率' },
+        ],
         textStyle: {
           color: '#fff',
           fontSize: this.fontSize
@@ -1025,11 +1117,11 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
-              fontSize: 14,
-              color: '#ff5a5a'
+              fontSize: this.fontSize,
+              color: '#ff5a5a',
             },
           },
         },
@@ -1050,7 +1142,7 @@ export default class PublicSession extends Vue {
             formatter: '{c}%',
             textStyle: {
               align: 'center',
-              fontSize: 14,
+              fontSize: this.fontSize,
               color: '#4992ff'
             },
           },
@@ -1063,17 +1155,30 @@ export default class PublicSession extends Vue {
    * 车商活跃趋势图
    */
   initOption7 () {
-    const colors = ['rgba(255, 193, 72, 0.1)', 'rgba(255, 90, 90, 0.1)', 'rgba(58, 77, 233, 0.1)'];
+    const colors = ['#0CF9FF', '#FF5D5D', '#FFC85D', '#0CF9FF', '#ff5a5a', '#ffde81'];
     this.option7 = {
       color: colors,
+      tooltip: {
+        trigger: 'item'
+      },
       grid: [{
         left: '10%',
         bottom: '15%',
         top: '30%',
-        right: '12%'
+        right: '4%'
       }],
       xAxis: {
         type: 'category',
+        axisTick: {
+          lineStyle: {
+            color: 'transparent',
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: "rgba(255, 255, 255, .8)"
+          }
+        },
         data: ['10.14-10.20', '10.21-10.27', '10.28-11.04', '11.04-11.11'],
         axisLabel: {
           textStyle: {
@@ -1085,6 +1190,11 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'left',
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
           axisLabel: {
             textStyle: {
               fontSize: this.fontSize
@@ -1096,20 +1206,18 @@ export default class PublicSession extends Vue {
             },
             show: true
           }
-        },
-        {
-          type: 'value',
-          position: 'right',
-          axisLabel: {  
-            formatter: '{value}%',
-            textStyle: {
-              fontSize: this.fontSize
-            }
-          },
         }
       ],
       legend: {
-        data: ['访问车商数(月)', '参拍车商数(月)', '中标车商数(月)', '访问车商数(周)','参拍车商数(周)', '中标车商数(周)'],
+        data: [
+          { name: '访问车商数(月)', icon: 'rect' }, 
+          { name: '参拍车商数(月)', icon: 'rect' }, 
+          { name: '中标车商数(月)', icon: 'rect' }, 
+          { name: '访问车商数(周)' }, 
+          { name: '参拍车商数(周)' }, 
+          { name: '中标车商数(周)' }, 
+        ],
+        width: 400,
         textStyle: {
           color: '#fff',
           fontSize: this.fontSize
@@ -1120,42 +1228,86 @@ export default class PublicSession extends Vue {
         {
           name: '访问车商数(月)',
           type: 'line',
-          symbol: 'none',
-          stack: 'month',
+          // symbol: 'none',
           yAxisIndex: 0,
           emphasis: {
             focus: 'series'
           },
-          areaStyle: {
-            color: 'rgba(255, 193, 72, 0.5)'
+          lineStyle: {
+            color: 'transparent',
           },
-          data: [520, 660, 780, 820]
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: '#28FAFF'
+            }, {
+              offset: 1,
+              color: '#100B2A'
+            }])
+          },
+          data: [520, 660, 780, 820],
+          label: {
+            show: true,
+            position: ['-100%', '-200%'],
+            formatter: '{c}',
+            textStyle: {
+              align: 'center',
+              fontSize: this.fontSize,
+              color: '#28FAFF',
+            },
+          },
         },
         {
           name: '参拍车商数(月)',
           type: 'line',
-          symbol: 'none',
-          stack: 'month',
+          // symbol: 'none',
           yAxisIndex: 0,
           emphasis: {
             focus: 'series'
           },
-          areaStyle: {
-            color: 'rgba(255, 90, 90, 0.5)'
+          lineStyle: {
+            color: 'transparent',
           },
-          data: [420, 540, 680, 720]
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: '#FF5D5D'
+            }, {
+              offset: 1,
+              color: '#100B2A'
+            }])
+          },
+          data: [420, 540, 680, 720],
+          label: {
+            show: false,
+            position: ['-100%', '-200%'],
+            formatter: '{c}',
+            textStyle: {
+              align: 'center',
+              fontSize: this.fontSize,
+              color: '#28FAFF',
+            },
+          },
         },
         {
           name: '中标车商数(月)',
           type: 'line',
-          symbol: 'none',
-          stack: 'month',
+          // symbol: 'none',
           yAxisIndex: 0,
           emphasis: {
             focus: 'series'
           },
+          lineStyle: {
+            color: 'transparent',
+          },
           areaStyle: {
-            color: 'rgba(58, 77, 233, 0.5)'
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: '#FFC85D'
+            }, {
+              offset: 1,
+              color: '#100B2A'
+            }])
           },
           data: [420, 520, 620, 720]
         },
@@ -1163,28 +1315,19 @@ export default class PublicSession extends Vue {
           name: '访问车商数(周)',
           type: 'line',
           smooth: 0.6,
-          symbol: 'none',
-          yAxisIndex: 1,
+          // symbol: 'none',
+          yAxisIndex: 0,
           lineStyle: {
-            color: '#ffde81'
-          },
-          areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(58, 77, 233, 0.3)'
-            }, {
-              offset: 1,
-              color: 'rgba(58, 77, 233, 0.1)'
-            }])
+            color: '#0CF9FF'
           },
           data: [10, 15, 10, 10],
           label: {
-            show: true,
+            show: false,
             position: 'top',
             formatter: '{c}%',
             textStyle: {
               align: 'center',
-              fontSize: 14,
+              fontSize: this.fontSize,
               color: '#4992ff'
             },
           },
@@ -1193,8 +1336,8 @@ export default class PublicSession extends Vue {
           name: '参拍车商数(周)',
           type: 'line',
           smooth: 0.6,
-          symbol: 'none',
-          yAxisIndex: 1,
+          // symbol: 'none',
+          yAxisIndex: 0,
           lineStyle: {
             color: '#ff5a5a',
           },
@@ -1205,7 +1348,7 @@ export default class PublicSession extends Vue {
             formatter: '{c}%',
             textStyle: {
               align: 'center',
-              fontSize: 14,
+              fontSize: this.fontSize,
               color: '#4992ff'
             },
           },
@@ -1214,10 +1357,10 @@ export default class PublicSession extends Vue {
           name: '中标车商数(周)',
           type: 'line',
           smooth: 0.6,
-          symbol: 'none',
-          yAxisIndex: 1,
+          // symbol: 'none',
+          yAxisIndex: 0,
           lineStyle: {
-            color: '#0cf9ff',
+            color: '#ffde81',
           },
           data: [100, 110, 100, 100],
           label: {
@@ -1226,7 +1369,7 @@ export default class PublicSession extends Vue {
             formatter: '{c}%',
             textStyle: {
               align: 'center',
-              fontSize: 14,
+              fontSize: this.fontSize,
               color: '#4992ff'
             },
           },
@@ -1239,9 +1382,12 @@ export default class PublicSession extends Vue {
    * 月成交率趋势图
    */
   initOption8 () {
-    const colors = ['#0cf9ff', '#0cf9ff', '#fff'];
+    const colors = ['#0CF9FF', '#ff5a5a'];
     this.option8 = {
       color: colors,
+      tooltip: {
+        trigger: 'item'
+      },
       grid: [{
         left: '10%',
         bottom: '15%',
@@ -1252,6 +1398,11 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'left',
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
           axisLabel: {
             textStyle: {
               fontSize: this.fontSize
@@ -1267,7 +1418,13 @@ export default class PublicSession extends Vue {
         {
           type: 'value',
           position: 'right',
-          axisLabel: {  
+          axisTick: {
+            lineStyle: {
+              color: 'transparent',
+            }
+          },
+          axisLabel: {
+            show: false,
             formatter: '{value}%',
             textStyle: {
               fontSize: this.fontSize
@@ -1278,6 +1435,16 @@ export default class PublicSession extends Vue {
       yAxis: {
         type: 'category',
         data: ['8月', '9月', '10月', '11月'],
+        axisTick: {
+          lineStyle: {
+            color: 'transparent',
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: "rgba(255, 255, 255, .8)"
+          }
+        },
         axisLabel: {
           textStyle: {
             fontSize: this.fontSize
@@ -1285,7 +1452,10 @@ export default class PublicSession extends Vue {
         },
       },
       legend: {
-        data: ['上拍台数', '成交率'],
+        data: [
+          { name: '毛利', icon: 'rect' }, 
+          { name: '毛利率' }, 
+        ],
         textStyle: {
           color: '#fff',
           fontSize: this.fontSize
@@ -1295,7 +1465,7 @@ export default class PublicSession extends Vue {
       series: [
         {
           data: [120, 200, 180, 100],
-          name: '上拍台数',
+          name: '毛利',
           type: 'bar',
           barWidth: '40%',
           xAxisIndex: 0,
@@ -1305,7 +1475,7 @@ export default class PublicSession extends Vue {
           },
         },
         {
-          name: '成交率',
+          name: '毛利率',
           type: 'line',
           symbolSize: 6,
           color: ['#ff5a5a'],
@@ -1317,11 +1487,11 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
-              fontSize: 14,
-              color: '#ff5a5a'
+              fontSize: this.fontSize,
+              color: '#ff5a5a',
             },
           },
         }
@@ -1334,11 +1504,11 @@ export default class PublicSession extends Vue {
 .public-session {
   height: 100vh;
   width: 100vw;
-  background: #0c1022!important;
+  background: #100B2A!important;
 
   &__container {
     display: flex;
-    // background: #0c1022;
+    // background: #100B2A;
     width: calc(100vw - 10px);
     flex-direction: row;
     flex-wrap: wrap;
@@ -1347,7 +1517,7 @@ export default class PublicSession extends Vue {
 
   &__box {
     display: flex;
-    background: #0c1022;
+    background: #100B2A;
     width: calc((100vw - 10px) / 3);
     flex-direction: column;
     flex-wrap: wrap;
@@ -1363,16 +1533,16 @@ export default class PublicSession extends Vue {
   .pie-title {
     position: absolute;
     z-index: 2;
-    top: 80px;
+    top: 28%;
     left: 50%;
     transform: translateX(-49%);
-    width: 75%;
+    width: 85%;
     height: 30px;
     display: flex;
     justify-content: space-around;
 
     &__close, &__dispute {
-      width: 2.2rem;
+      width: 2.5rem;
       height: 30px;
       line-height: 30px;
       text-align: center;
@@ -1383,6 +1553,7 @@ export default class PublicSession extends Vue {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      padding: 0 10px;
     }
 
     &__close {
@@ -1393,7 +1564,7 @@ export default class PublicSession extends Vue {
     }
 
     &__hightlight {
-      color: #0cf9ff;
+      color: #0CF9FF;
       font-size: .14rem;
     }
   }

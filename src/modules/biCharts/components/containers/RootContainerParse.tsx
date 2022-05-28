@@ -1,9 +1,9 @@
 import { Component, Vue } from 'vue-property-decorator';
-import VerticalContainer from './VerticalContainer.vue'
+import RootContainer from './RootContainer.vue'
 import store from '@/vuex/store'
 const option = {
   cssStyle: {
-    width: '33.3vw',
+    width: '100vw',
     height: 'calc(100vh - 100px)',
     background: '#0c1022'
   }
@@ -11,10 +11,10 @@ const option = {
 
 @Component({
   components: {
-    VerticalContainer,
+    RootContainer,
   }
 })
-class VerticalContainerParse extends Vue {
+class RootContainerParse extends Vue {
   static option = option
 
   render (h, section, children) {
@@ -32,7 +32,7 @@ class VerticalContainerParse extends Vue {
         click: (e) => {
           e.stopPropagation()
           store.dispatch('biCharts/setSelectedType', {
-            selectedType: 'VerticalContainerParse'
+            selectedType: 'RootContainerParse'
           })
           store.dispatch('biCharts/setUuid', {
             uuid: section.section.uuid,
@@ -41,15 +41,15 @@ class VerticalContainerParse extends Vue {
       }
     }
     return (
-      <VerticalContainer
+      <RootContainer
         { ..._props }
         { ..._propsOn }
-      >{ children }</VerticalContainer>
+      >{ children }</RootContainer>
     )
   }
 }
 
 // @ts-ignore
-VerticalContainerParse.des = '纵向容器'
+RootContainerParse.des = '根容器'
 
-export default VerticalContainerParse
+export default RootContainerParse

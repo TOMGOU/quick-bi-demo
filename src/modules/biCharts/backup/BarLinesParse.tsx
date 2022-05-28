@@ -1,16 +1,18 @@
 import { Component, Vue } from 'vue-property-decorator';
-import BarLine from './BarLine.vue'
+import BarLines from './BarLines.vue'
 import * as echarts from 'echarts/core'
 import store from '@/vuex/store'
 
 const option = {
   cssStyle: {
-    width: "33vw",
-    height: "30vh"
+    width: "30vw",
+    height: "20vh"
   },
-  title: '日拍趋势图',
   option: {
     color: ['#0cf9ff', '#0cf9ff', '#fff'],
+    tooltip: {
+      trigger: 'item'
+    },
     grid: [{
       left: '10%',
       bottom: '15%',
@@ -125,10 +127,10 @@ type OptionType = any
 
 @Component({
   components: {
-    BarLine,
+    BarLines,
   }
 })
-class BarLineParse extends Vue {
+class BarLinesParse extends Vue {
 
   static option: OptionType = option
 
@@ -138,7 +140,7 @@ class BarLineParse extends Vue {
         click: e => {
           e.stopPropagation()
           store.dispatch('biCharts/setSelectedType', {
-            selectedType: 'BarLineParse'
+            selectedType: 'BarLinesParse'
           })
           store.dispatch('biCharts/setUuid', {
             uuid: section.section.uuid,
@@ -148,20 +150,21 @@ class BarLineParse extends Vue {
       props: {
         option: section.section.option.option,
         cssStyle: section.section.option.cssStyle,
-        title: section.section.option.title,
       }
     }
     
     return (
       // @ts-ignore
-      <BarLine
+      <BarLines
         { ..._propsOn }
-      ></BarLine>
+      ></BarLines>
     )
   }
 }
 
 // @ts-ignore
-BarLineParse.des = '普通图表'
+BarLinesParse.des = '折线柱状图'
+// @ts-ignore
+BarLinesParse.icon = 'lx-icon-data'
 
-export default BarLineParse
+export default BarLinesParse

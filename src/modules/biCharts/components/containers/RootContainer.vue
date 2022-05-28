@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vertical-container"
+    class="root-container"
     @dragover.prevent
     @drop.stop="handleDrop"
     :style="{...jsonSchema.option.cssStyle}"
@@ -14,7 +14,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
-export default class VerticalContainer extends Vue{
+export default class RootContainer extends Vue{
   @Prop({default: () => ({})}) jsonSchema
 
   handleDrop (e) {
@@ -24,13 +24,9 @@ export default class VerticalContainer extends Vue{
 </script>
 
 <style scoped>
-.vertical-container {
-  border: 1px solid yellowgreen;
-  background-color: #eee;
-  width: 100%;
-  min-height: 500px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.root-container {
+  background-color: #0c1022;
+  width: 100vw;
+  height: 100vh;
 }
 </style>

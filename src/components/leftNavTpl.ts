@@ -8,20 +8,9 @@ export const leftNav: Menus[] = [
         name: '公开场数据监控',
         path: '/biCharts/publicSession',
       },
-      // {
-      //   name: '配置页面',
-      //   path: '/biCharts/config',
-      // }
-    ]
-  },
-  {
-    name: '配置页面',
-    icon: 'lx-icon-document',
-    path: '',
-    submenus: [
       {
-        name: '初级版本',
-        path: '/config',
+        name: '配置页面',
+        path: '/biCharts/config',
       }
     ]
   }

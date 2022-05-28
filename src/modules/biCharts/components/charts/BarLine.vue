@@ -1,15 +1,5 @@
 <template>
-  <!-- <section class="bar-line">
-    <div class="bar-line__title">
-      <i class="lx-icon-arrow-right"></i>
-      <i class="lx-icon-arrow-right bar-line__icon"></i>
-      {{ title }}
-    </div>
-    <div class="bar-line__mask">
-      <chart class="bar-line__chart" :option="option" :theme="theme" autoresize></chart>
-    </div>
-  </section> -->
-  <div class="bar-line-box" :cssStyle="cssStyle">
+  <div class="bar-line-box" :style="cssStyle">
     <slot></slot>
     <chart-box :title="title" :cssStyle="cssStyle">
       <chart class="bar-line" ref="barLineChart" :option="option" :theme="theme" autoresize></chart>
@@ -19,7 +9,7 @@
 
 <script lang="tsx">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import ChartBox from './ChartBox.vue'
+import ChartBox from '../containers/ChartBox.vue'
 import eCharts from 'vue-echarts'
 import * as echarts from 'echarts'
 
@@ -32,6 +22,9 @@ import * as echarts from 'echarts'
 export default class BarLine extends Vue {
   @Prop({ default: () => ({
     color: ['#0cf9ff', '#0cf9ff', '#fff'],
+    tooltip: {
+      trigger: 'item'
+    },
     xAxis: {
       type: 'category',
       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -104,12 +97,13 @@ export default class BarLine extends Vue {
   }) }) readonly option: any
   @Prop({ default: () => ({}) }) readonly cssStyle: any
   @Prop({default: '日拍趋势图'}) readonly title: string
-  private theme = require('../theme/index.json')
+  private theme = require('../../theme/index.json')
 
   @Watch('option', { immediate: true, deep: true })
   handleSetOption () {
     // @ts-ignore
     this.$refs.barLineChart && this.$refs.barLineChart.setOption(this.option, true)
+    console.log('this.option', this.option)
   }
 }
 </script>
@@ -120,7 +114,7 @@ export default class BarLine extends Vue {
 }
 
 .bar-line {
-  width: 75%;
+  width: 90%;
   height: 95%;
 }
 </style>

@@ -4,7 +4,7 @@ import store from '@/vuex/store'
 
 const option = {
   cssStyle: {
-    bottom: '-100px',
+    bottom: '-170px',
     right: 0
   },
   option: {

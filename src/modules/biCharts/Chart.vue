@@ -1,52 +1,20 @@
 <template>
-  <div class="config">
-    <!-- 顶栏 -->
-    <top-bar v-if="!isFullScreen" @handleFullScreen="handleFullScreen" />
-    <!-- 顶栏 -->
-    <div class="config__main-content">
-      <el-row>
-        <el-col :span="2" v-if="!isFullScreen">
-          <!-- 物料堆 -->
-          <material-stack />
-          <!-- 物料堆 -->
-        </el-col>
-        <el-col :span="isFullScreen ? 24 : 16">
-          <!-- 主舞台 -->
-          <render-engine ref="engine"
-            :jsonSchema.sync="jsonSchema"
-          ></render-engine>
-          <!-- 主舞台 -->
-        </el-col>
-        <el-col :span="6" v-if="!isFullScreen">
-          <!-- 配置面板 -->
-          <div class="config-panel block">
-            <config-panel
-              :jsonSchema.sync="jsonSchema"
-            ></config-panel>
-          </div>
-          <!-- 配置面板 -->
-        </el-col>
-      </el-row>
-    </div>
+  <div class="chart">
+    <render-engine ref="engine"
+      :jsonSchema.sync="jsonSchema"
+    ></render-engine>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Mutation } from 'vuex-class'
-import BarLine from '../biCharts/components/BarLine.vue'
-import TopBar from '../biCharts/fragments/TopBar.vue'
-import RenderEngine from '../biCharts/fragments/RenderEngine.vue'
-import ConfigPanel from '../biCharts/fragments/ConfigPanel.vue'
-import MaterialStack from '../biCharts/fragments/MaterialStack.vue'
+import RenderEngine from './fragments/RenderEngine.vue'
 import * as echarts from 'echarts/core'
 
 @Component({
   components: {
-    TopBar,
     RenderEngine,
-    ConfigPanel,
-    MaterialStack,
   }
 })
 export default class PublicSession extends Vue {
@@ -54,17 +22,28 @@ export default class PublicSession extends Vue {
   @Mutation('UPDATE_CRUMB') hideCrumb
   // 初始数据
   private jsonSchema: any = {
-    type: 'VerticalContainerParse',
-    uuid: '',
+    type: 'RootContainerParse',
+    uuid: 'root',
     option: {}
   }
 
   private isFullScreen = false
 
   mounted () {
+    const id = this.$route.query.id
+    this.fetchChartConfig(id)
     window.addEventListener('fullscreenchange', e => {
       this.handleScreenChange()
     })
+  }
+
+  /**
+   * 页面销毁事件
+   */
+  async fetchChartConfig (id) {
+    const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.fetchChartConfig({ id }) || {}
+    // if (code !== 0) return
+    this.jsonSchema = data
   }
 
   /**

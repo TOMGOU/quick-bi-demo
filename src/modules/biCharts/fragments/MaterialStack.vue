@@ -3,18 +3,44 @@
     <div class="components__title">
       物料堆
     </div>
+    <div class="components__category">
+      基础
+    </div>
     <ul>
-      <li v-for="(item, index) in stacks" :key="index"
+      <li v-for="(item, index) in basics" :key="index"
         class="components__item"
         :draggable="true" @dragstart="handleDrag(item.name)"
         >
         {{ item.des }}
       </li>
     </ul>
+    <div class="components__category">
+      容器
+    </div>
+    <ul>
+      <li v-for="(item, index) in containers" :key="index"
+        class="components__item"
+        :draggable="true" @dragstart="handleDrag(item.name)"
+        >
+        {{ item.des }}
+      </li>
+    </ul>
+    <div class="components__category">
+      图表
+    </div>
+    <ul>
+      <li v-for="(item, index) in charts" :key="index"
+        class="components__item"
+        :draggable="true" @dragstart="handleDrag(item.name)"
+        >
+        <i :class="item.icon"></i>
+        <div class="components__des">{{ item.des }}</div>
+      </li>
+    </ul>
   </section>
 </template>
 <script>
-import { components, parsersList } from '../components'
+import { charts, containers, basics } from '../components'
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, namespace } from 'vuex-class'
 
@@ -25,7 +51,11 @@ export default class ConfigPanel extends Vue {
   @biCharts.Action('setSelectedType') setSelectedType
   @biCharts.State('selectedType') selectedType
 
-  stacks = parsersList
+  charts = charts
+
+  containers = containers
+
+  basics = basics
 
   // 拾取被配置节点
   handleDrag (item) {
@@ -41,11 +71,23 @@ export default class ConfigPanel extends Vue {
       font-weight: bold;
     }
 
+    &__category {
+      padding-left: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: left;
+    }
+
     &__item {
-      border: 1px solid var(--mainLine);
       margin: 2px 5px;
       padding: 10px 0;
       border-radius: 18px;
+      text-align: center;
+    }
+
+    &__des {
+      margin-top: 5px;
+      text-align: center;
     }
   }
 </style>

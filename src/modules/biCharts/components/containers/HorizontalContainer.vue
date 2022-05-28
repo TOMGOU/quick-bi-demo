@@ -24,7 +24,6 @@ export default class HorizontalContainer extends Vue{
 
 <style scoped>
 .horizontal-container {
-  border: 1px solid red;
   background-color: #eee;
   display: flex;
   flex-direction: row;

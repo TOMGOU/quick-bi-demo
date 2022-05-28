@@ -24,7 +24,7 @@ export default class Map extends Vue {
   @Prop({ default: () => ({}) }) readonly option: any
   @Prop({ default: () => ({}) }) readonly cssStyle: any
   @Prop({default: () => ({})}) jsonSchema
-  private theme = require('../theme/index.json')
+  private theme = require('../../theme/index.json')
 
   handleDrop (e) {
     this.$emit('drop', e, this)
@@ -36,7 +36,7 @@ export default class Map extends Vue {
 .map {
   position: relative;
   width: 100%;
-  height: 40vh;
+  height: 50vh;
 
   // &__map {
   //   width: 560px;

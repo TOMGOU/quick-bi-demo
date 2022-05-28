@@ -1,15 +1,16 @@
 const vueReq = require.context('./', false, /(.+)\.vue/)
-const parseReq = require.context('./', false, /(.+)Parse\.ts/)
+const parseReq = require.context('./', true, /(.+)Parse\.ts/)
+const parseChartsReq = require.context('./charts/', false, /(.+)Parse\.ts/)
+const parseContainersReq = require.context('./containers/', false, /(.+)Parse\.ts/)
+const parseBasicsReq = require.context('./basics/', false, /(.+)Parse\.ts/)
 
-const componentsName = vueReq.keys()
-const components = componentsName.reduce((components, module) => {
+const components = vueReq.keys().reduce((components, module) => {
   const mod = vueReq(module)
   components[mod.default.name] = mod.default
   return components
 }, {})
 
-const parsersName = parseReq.keys()
-const parsersList = parsersName.map(item => {
+const parsersList = parseReq.keys().map(item => {
   const mod = parseReq(item)
   return {
     name: mod.default.name,
@@ -18,10 +19,28 @@ const parsersList = parsersName.map(item => {
   // item.match(/.\/(.+)\.tsx/g)
   // return RegExp.$1
 })
-const parsers = parsersName.reduce((parsers, module) => {
+const parsers = parseReq.keys().reduce((parsers, module) => {
   const mod = parseReq(module)
   parsers[mod.default.name] = mod.default
   return parsers
 }, {})
 
-export { components, parsers, parsersList }
+const charts = parseChartsReq.keys().reduce((parsers, module) => {
+  const mod = parseChartsReq(module)
+  parsers[mod.default.name] = mod.default
+  return parsers
+}, {})
+
+const containers = parseContainersReq.keys().reduce((parsers, module) => {
+  const mod = parseContainersReq(module)
+  parsers[mod.default.name] = mod.default
+  return parsers
+}, {})
+
+const basics = parseBasicsReq.keys().reduce((parsers, module) => {
+  const mod = parseBasicsReq(module)
+  parsers[mod.default.name] = mod.default
+  return parsers
+}, {})
+
+export { components, parsers, parsersList, charts, containers, basics }

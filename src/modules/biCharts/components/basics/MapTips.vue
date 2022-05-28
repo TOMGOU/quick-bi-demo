@@ -1,7 +1,7 @@
 <template>
   <section class="map-tips" :style="cssStyle">
     <div class="map-tips__name">{{ sessionName }}</div>
-    <div class="map-tips__data">{{ sessionAuctions }}，{{ sessionAuctionRate }}</div>
+    <div class="map-tips__data">{{ sessionAuctions }}，{{ formatter(sessionAuctionRate) }}</div>
   </section>
 </template>
 
@@ -14,6 +14,10 @@ export default class TopData extends Vue {
   @Prop({default: 5000}) readonly sessionAuctions: number
   @Prop({default: '70.0%'}) readonly sessionAuctionRate: string
   @Prop({default: () => ({})}) readonly cssStyle: any
+
+  formatter (item) {
+    return parseFloat(item).toFixed(1)
+  }
 }
 </script>
 
@@ -24,7 +28,6 @@ export default class TopData extends Vue {
   top: 28%;
   width: 100px;
   z-index: 2;
-  height: 51px;
   margin-top: 20px;
   background-color: #0a1934;
   box-shadow: inset 0px 0px 10px 0px rgba(12, 249, 255, 0.8);
@@ -34,8 +37,9 @@ export default class TopData extends Vue {
 
   &__name {
     text-align: center;
-    line-height: 25px;
+    line-height: 20px;
     font-size: 14px;
+    margin-bottom: 5px;
 	  color: #ffffff;
   }
 

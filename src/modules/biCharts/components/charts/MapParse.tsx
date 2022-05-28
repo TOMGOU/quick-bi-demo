@@ -2,7 +2,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import Map from './Map.vue'
 import store from '@/vuex/store'
 import * as echarts from 'echarts'
-const china = require('../map/copy.json')
+const china = require('../../map/china.json')
 echarts.registerMap('CHINA', china)
 const myItemStyle = {
   normal: {
@@ -110,7 +110,6 @@ const option = {
 })
 class MapParse extends Vue {
   static option = option
-
   render (h, section, children) {
     const _props = {
       props: {
@@ -149,5 +148,7 @@ class MapParse extends Vue {
 
 // @ts-ignore
 MapParse.des = '地图'
+// @ts-ignore
+MapParse.icon = 'lx-icon-address'
 
 export default MapParse

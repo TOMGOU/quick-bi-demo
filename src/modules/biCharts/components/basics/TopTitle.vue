@@ -3,6 +3,9 @@
     <div class="top-title__title">
       {{ title }}
     </div>
+    <div class="top-title__left">
+      公开场<span v-if="sessionName !== '公开场'">-{{ sessionName }}</span>
+    </div>
     <div class="top-title__right">
       <div class="top-title__date-time">
         <!-- 2021年10月26日 14:35 -->
@@ -24,7 +27,8 @@ import util from '@/common/util';
 
 @Component
 export default class TopTitle extends Vue {
-  @Prop({default: '公开场数据监控'}) readonly title: string
+  @Prop({default: '小雷拍数据监控'}) readonly title: string
+  @Prop({default: '河南专场'}) readonly sessionName: string
   @Prop({default: () => ({})}) readonly cssStyle: any
   private timer = null
   private dataTime = ''
@@ -55,21 +59,34 @@ export default class TopTitle extends Vue {
   &__title {
     position: relative;
     width: 700px;
-	  height: 100px;
-	  line-height: 100px;
+    height: 100px;
+    line-height: 100px;
     text-align: center;
     font-size: 50px;
+    font-weight: bold;
     color: #ffffff;
     margin: auto;
-    background-image: url(../../../assets/styles/images/title-bg.png);
+    background-image: url(../../../../assets/styles/images/title-bg.png);
+  }
+
+  &__left {
+    position: absolute;
+    top: 27px;
+    left: 27px;
+    width: 280px;
+    height: 24px;
+    color: #ffffff;
+    font-size: 24px;
+    height: 24px;
+    line-height: 24px;
   }
 
   &__right {
     position: absolute;
     top: 27px;
     right: 27px;
-    width: 300px;
-	  height: 24px;
+    width: 280px;
+    height: 24px;
     display: flex;
     justify-content: space-between;
   }
@@ -89,6 +106,7 @@ export default class TopTitle extends Vue {
     text-align: center;
     cursor: pointer;
     font-size: 18px;
+    font-weight: bold;
 
     &:before {
       color: #fff;
