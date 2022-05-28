@@ -1,0 +1,217 @@
+/*nav*/
+@import "../base/fn";
+.nav-logo {
+  cursor: pointer;
+  position: relative;
+  color: #fff;
+  min-width: 240px;
+  box-sizing: border-box;
+  .store-name {
+    background-size: 120px 32px!important;
+    height: 50px;
+  }
+  .store-sub-name {
+    padding: 20px 23px 0 170px;
+    display: block;
+    font-size: @font-basic-size;
+    line-height: 1;
+    color: #e5e5e5;
+  }
+}
+
+// nav lx-menu
+.sign-out {
+  top: 35px;
+  text-align: center;
+  color: grey;
+  z-index: 9999!important;
+  .el-dropdown-menu__item {
+    padding: 0 10px;
+  }
+  [class*=lx-icon-]{
+    color: grey;
+    margin-right: 10px;
+  }
+  .lx-icon-exit {
+    vertical-align: sub;
+  }
+}
+.wrapper-nav__sec {
+  height:90px;
+  box-shadow: 2px 0px 6px 0px 
+		rgba(0, 21, 41, 0.35);
+  .wrapper-nav{
+    position: fixed;
+    z-index: 998;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 90px;
+    .lx-menu {
+      border-radius: 0;
+      border: 1px solid #0c121f;
+      height: 50px;
+      box-sizing: border-box;
+      background-color: #323857;
+      position: relative;
+      z-index: 202;
+      background: #2e2e3b;
+      min-width: 100%;
+      margin-bottom: 40px;
+      display: flex;
+      li{
+        float: left;
+        cursor: pointer;
+      }
+      .business-menus-wrap {
+        flex: 1;
+        padding-right: 90px;
+        overflow-x: auto;
+        white-space: nowrap;
+        & > div {
+          display: inline-block;
+        }
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        }
+      .lx-submenu{
+        .lx-submenu__title {
+          position: relative;
+          padding: 0 20px;
+          color: rgba(255,255,255,0.6);
+          font-size: 16px;
+        }
+        .lx-menu-item a {
+          color: #eff4ff;
+        }
+        .lx-submenu__icon-arrow {
+          position: absolute;
+          top: 0;
+          display:none;
+          font-size:0;
+        }
+      }
+      .lx-submenu .lx-submenu__title,& > .lx-menu-item{
+        height: 50px;
+        line-height: 50px;
+        border:0;
+      }
+      .login-name {
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        width: 50px;
+        text-align: right;
+        color: #dee9ff;
+        transform: translateY(-50%);
+        a {
+          color: #dee9ff;
+          background: #555170;
+          width: 32px;
+          height: 32px;
+          border-radius: 100%;
+          line-height: 32px;
+          text-align: center;
+          display: inline-block;
+        }
+        .el-dropdown {
+          line-height: 32px;
+        }
+      }
+
+      .lx-submenu.is-active .lx-submenu__title {
+        display: block;
+        text-align: center;
+        height: 50px;
+        // position: relative;
+        font-weight: bold;
+        color: rgba(255,255,255,1);
+        border-bottom: 4px solid @color-primary;
+      }
+      .lx-submenu.is-hover .lx-submenu__title {
+        color: rgba(255,255,255,1);
+      }
+    }
+    .lx-menu-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50px;
+      z-index: 202;
+      background: #fff;
+      height: 40px;
+      padding: 0!important;
+      box-sizing: border-box;
+      border-radius: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .12);
+      overflow-x: auto;
+      white-space: nowrap;
+      &::-webkit-scrollbar{
+        display: none;
+      }
+      a{
+        color: #68686b;
+        height: 40px;
+        line-height: 40px;
+        padding: 0 20px;
+        display: inline-block;
+        &.sub-menu--action, &:hover{
+          display:inline-block;
+          text-align: center;
+          font-weight: bold;
+          color: @color-primary;
+        }
+        &:hover{
+          font-weight: 100;
+        }
+      }
+    }
+    .third-aside-nav {
+      position: fixed;
+      z-index: 201;
+      top: 0;
+      left: 0;
+      width: 40px;
+      height: 100%!important;
+      padding-top: 154px!important;
+      background: #0e1116!important;
+      &-item{
+        width: 100%;
+        text-align: center;
+        &:hover{
+          background-color: hsla(0,0%,100%,.2)
+        }
+        &.is-active {
+          height: 56px!important;
+          .aside-menu-icon:before {
+            color: #5671a8
+          }
+        }
+        .el-tooltip {
+          padding: 0!important;
+        }
+        .aside-menu-icon:before {
+          color: #dee9ff
+        }
+      }
+      .el-menu--collapse.el-menu {
+      width: 40px;
+      position: fixed;
+      }
+    }
+  }
+}
+
+
+/****
+ **搜索栏目，改造后特殊配置，
+ **待全部优化完成统一删除此处样式名optimization-temporary__module
+ ****/
+.optimization-temporary__module{
+  padding: 0 14px 14px;
+  .form-filtrate__shortcut{
+    margin: 0 -14px;
+  }
+}

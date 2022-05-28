@@ -1,0 +1,778 @@
+/*global.less*/
+@import "../../base/fn";
+body {
+  min-width: @wrapper-main;
+  margin: 0 auto;
+  max-width: 100%;
+  background-color: #ebedf1;
+  color: @txtcolorGrey;
+  font-size: @font-basic-size;
+  line-height: 1;
+  height: 100%;
+  min-height: 100%;
+}
+
+#app {
+  height: 100%;
+  min-height: 100%;
+}
+
+.middle-text{
+  padding: 0 13px;
+  color: #666;
+  text-align: center;
+}
+.w120 {
+  width: 120px;
+}
+
+.ml10 {
+  margin-left: 10px;
+}
+.ml20 {
+  margin-left: 20px;
+}
+
+.ml40 {
+  margin-left: 40px;
+}
+
+.mb40 {
+  margin-bottom: 40px;
+}
+
+.main-space {
+  width: calc(100% - 60px);
+  padding: 0 10px 0 10px;
+  box-sizing: border-box;
+  margin-left: 60px;
+  margin-top: 55px;
+  &--login {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  & > :first-child  {
+    background-color: #ffffff;
+  }
+  .el-breadcrumb {
+    font-size: 12px;
+  }
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner,
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner a,
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover,
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner:hover {
+    color: #333;
+  }
+  &__breadcrumb-item {
+    .el-breadcrumb__inner {
+      color: #1890ff;
+    }
+  }
+  &__breadcrumb-link {
+    .el-breadcrumb__inner {
+      color: #1890ff;
+      cursor: pointer;
+      font-weight: normal;
+    }
+  }
+}
+
+// .group-content {
+//   margin: 10px;
+//   box-sizing: border-box;
+//   min-height: calc(100vh - 68px);
+//   background-color: #fff;
+// }
+
+.el-breadcrumb{
+  padding-left: 20px;
+  line-height: 48px;
+  background-color: #fff;
+}
+
+.pt20 {
+  padding-top: 20px;
+}
+
+.mt10 {
+  margin-top: 10px;
+}
+
+.wh120 {
+  width: 120px;
+  height: 120px;
+}
+
+.wp100 {
+  width: 100%;
+}
+
+.psr {
+  position: relative;
+}
+
+.fwb {
+  font-weight: bold;
+}
+
+.etc{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.font-color-gray4 {
+  color: #808080;
+}
+.font-color-grey2{
+  color: @grey2;
+}
+// 排版
+.text-left, .tal {
+  text-align: left;
+}
+
+.text-center, .tac {
+  text-align: center;
+}
+
+.text-right ,.tar{
+  text-align: right;
+}
+
+.left, .fl {
+  float: left;
+}
+
+.right, .fr {
+  float: right;
+}
+
+.dsb {
+  display: inline-block;
+}
+
+.dsn,.hide {
+  display: none;
+}
+.box-shadow {
+  border-radius: 0 0 4px 4px;
+  box-shadow: 2px 2px 3px #e2e2e2, -2px 2px 3px #e2e2e2;
+}
+
+/*树形结构*/
+// .tree-article-b {
+//   background: #fff;
+//   border-radius: 4px;
+//   .el-tree {
+//     border: none;
+//     border-radius: 4px 0 0 4px;
+//     margin-left: 10px;
+//     border-right:1px solid #eee;
+//     .lx-icon-circle-check2 {
+//       margin-left: 5px;
+//     }
+//   }
+//   .tab-content {
+//     border-radius: 0 4px 4px 0;
+//     margin-top: 0;
+//     padding-bottom: 10px;
+//     border-left: 1px solid #eee;
+//     margin-left: -1px;
+//   }
+// }
+
+.el-dropdown-menu {
+  overflow: auto;
+  max-height: 400px;
+  [class^="el-icon-"], [class*=" el-icon-"] {
+    color: #808080;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -4px;
+    margin-right: 10px;
+  }
+}
+
+.el-tag--gray {
+  background: #eee;
+  color: @txtcolorGrey;
+}
+
+.el-tag--primary {
+  background:@color-primary;
+  color: #fff;
+  cursor: pointer;
+  .lx-icon-close {
+    color: #a7d9ee;
+  }
+}
+
+//下载
+.info-img-con {
+  position: relative;
+  .hover-img-con {
+    display: none;
+    background: rgba(56, 56, 56, 0.9);
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    .el-button--text {
+      width: 120px;
+    }
+    .lx-icon-download2 {
+      font-size: 25px;
+      color: #eee;
+      margin-bottom: 10px;
+      margin-top: 34px;
+    }
+  }
+  &:hover {
+    .hover-img-con {
+      display: block;
+    }
+  }
+}
+//修改资料
+.edit-account-container {
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: 40px;
+}
+
+.edit-account {
+  width: 800px;
+  margin: auto;
+  background: #fff;
+  border-radius: 4px;
+  position: relative;
+  color: @txtcolorGrey;
+
+  .el-button--text {
+    color: @txtcolorGrey;
+    margin-left: 10px;
+    span {
+      display: inline-block;
+      vertical-align: 0;
+    }
+  }
+  .el-tag{
+    margin-bottom: 10px;
+  }
+  .el-form-item__content {
+    font-size: 14px;
+  }
+  .el-form-item {
+    line-height: 32px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eeeeee;
+  }
+  .el-form-item:last-child {
+    border-bottom: 0;
+  }
+  .el-input {
+    vertical-align: middle;
+  }
+  .phone {
+    .lx-icon-edit3 {
+      background: @color-primary;
+      border-radius: 100%;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
+      line-height: 20px;
+      color: #a3d5ee;
+      vertical-align: 0;
+    }
+
+  }
+  .phone-edit {
+    .el-button {
+      padding: 7px 18px;
+      margin-left: 10px;
+    }
+  }
+  .img-box {
+    border-radius: 4px;
+    border: 4px solid #fff;
+    box-sizing: border-box;
+    margin: -20px auto 0 40px;
+    width: 128px;
+    height: 128px;
+    display: block;
+  }
+  .el-form-item__label {
+    text-align: left;
+    color: #383838;
+    font-size: 14px;
+  }
+}
+
+// .el-step start
+.el-step.is-vertical .el-step__line {
+  width: 1px;
+}
+.el-step__title {
+  font-size: 12px;
+  font-weight: bold;
+}
+.el-step__title.is-wait {
+  color: #333;
+  position: relative;
+  margin-top: -6px;
+}
+.el-step__description.is-wait {
+  color: #666;
+}
+.el-step.is-vertical .el-step__main {
+  padding-bottom: 20px;
+}
+.el-step__icon-inner.lx-icon-status-ok {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+	background-color: #15a1ff;
+}
+.lx-icon-status-ok:before{
+  transform: translateX(-50%) translateY(-50%);
+  -ms-transform: translateX(-50%) translateY(-50%);
+}
+.el-step__icon-inner.lx-icon-wait{
+  width: 10px;
+  height: 10px;
+  background-color: #e6e6e6;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+.el-step__icon {
+  background: none;
+}
+.el-step.is-vertical.is-flex:last-of-type {
+  .el-step__icon.is-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #d4eeff;
+  }
+  .el-step__title.is-wait {
+    margin-top: -2px;
+  }
+}
+.el-step.is-vertical .el-step__head {
+  text-align: center;
+}
+// .el-step end
+
+//.el-popover
+.el-popover {
+  .el-popover__header {
+    position: relative;
+    margin: 0 20px;
+    height: 42px;
+    line-height: 42px;
+    border-bottom: 1px solid #d9d9d9;
+    font-size: 14px;
+    color: @txtcolorGrey;
+    .el-button--text{
+      position: absolute;
+      top: 50%;
+      right: 0;
+      font-size: 16px;
+      color: #999;
+      cursor: pointer;
+      line-height: 20px;
+      text-align: center;
+      transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+    }
+  }
+  padding: 0;
+  box-sizing: border-box;
+  .tip-tags-box {
+    padding: 20px 20px 0;
+    .el-checkbox {
+      width: 33.3%;
+      margin-bottom: 20px;
+      padding-right: 10px;
+      overflow: hidden;
+      white-space: nowrap;
+
+      &__label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    .el-checkbox + .el-checkbox {
+      margin-left: 0;
+    }
+  }
+  .lab {
+    color: #fb3f3f;
+    font-size: 14px;
+    display: block;
+    padding: 0 20px 20px;
+  }
+  .el-popover__footer{
+    .wp100{
+      width: auto;
+    }
+    .lx-icon-check {
+      display: none;
+    }
+  }
+}
+
+.el-popover__footer {
+  padding: 6px 0;
+  margin: 0 16px;
+  box-sizing: border-box;
+  text-align: right;
+  border-top: 1px solid #d9d9d9;
+}
+
+.el-dialog  {
+  .el-icon-warning {
+    color: #faad14;
+  }
+  .el-message-box__status {
+    font-size: 18px !important;
+    top: 28px;
+  }
+  .el-message-box__message {
+    padding-left: 0;
+    margin-left: 0 !important;
+  }
+  // .el-dialog__title{font-weight: bold;}
+  .el-message-box__content {
+    padding: 15px 0 50px 16px;
+    color: #484f6a;
+    font-size: 14px;
+    position: relative;
+    box-sizing: content-box;
+  }
+  .el-dialog__close{
+    right: 20px;
+  }
+  &__header {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 16px !important;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-bottom: 1px solid #d9d9d9;
+  }
+  &__title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+  }
+  &__headerbtn {
+    position: relative;
+    top: 0;
+    right: 0;
+  }
+  &__footer {
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: #eee;
+    border-top: 1px solid #d8dce6;
+  }
+}
+
+.el-radio-group {
+  .el-radio-button__inner {
+    border-radius: 0;
+  }
+}
+
+.el-popover .el-icon-close {
+  font-size: 15px;
+  right: 0;
+}
+
+//tip
+.el-message-box {
+  background: #eee;
+}
+
+/*树形结构弹出层*/
+.tip-tag-box {
+  min-height: 72px;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  padding: 0 10px 10px;
+  .el-tag {
+    margin-top: 10px;
+    margin-right: 5px;
+  }
+}
+.el-dialog__body {
+  max-height: 450px;
+  overflow: auto;
+}
+.tip-confirm-order {
+  width: 610px;
+  .el-button--primary {
+    color: #dee9ff;
+  }
+  .el-dialog__body {
+    background: #fff;
+  }
+  .radius img {
+    border-radius: 100%;
+  }
+  .el-dropdown-box {
+    .el-dropdown {
+      font-size: 14px;
+      color: #383838;
+      margin-left: 20px;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .el-icon-caret-bottom {
+      color: #B8B8B8;
+      font-size: 13px;
+      margin-top: -3px;
+    }
+  }
+  .coupon-list {
+    padding-bottom: 10px;
+    padding-top: 40px;
+  }
+  .send-message {
+    line-height: 46px;
+    font-size: @font-basic-size;
+    p {
+      line-height: 28px;
+      color: #b8b8b8;
+      margin-left: 22px;
+    }
+  }
+  .pos-rel-total {
+    color: #FF8019;
+    font-size: 14px;
+    text-align: right;
+    .lx-icon-circle-money {
+      font-size: 20px;
+      display: inline-block;
+      margin-top: -4px;
+      margin-right: 10px;
+      background: #FFDDC2;
+      border-radius: 100%;
+    }
+  }
+}
+
+.tip-tree-alias {
+  width: 600px;
+  .el-dialog__body {
+    padding: 20px 0;
+  }
+  .tip-tag-box {
+    margin: 0 20px;
+  }
+  .el-tree-node {
+    text-indent: 14px;
+  }
+  .el-tree {
+    background: #eee;
+  }
+  .el-tree-node__content {
+    position: relative;
+  }
+  .tree-title {
+    margin: 16px 0 0 20px;
+  }
+  .lx-icon-tree {
+    color: #80b1eb;
+    font-size: 21px;
+    margin-right: 10px;
+    margin-top: -3px;
+    text-indent: 0;
+  }
+  .el-tree-node__content > .el-checkbox {
+    position: absolute;
+    right: 20px;
+    margin-right: 0;
+    top: 0;
+  }
+}
+//底部按钮
+.bottom-btn {
+  position: relative;
+  z-index: 112;
+  padding-top: 60px;
+  .btn-fix {
+    position: fixed;
+    height: 58px;
+    line-height: 58px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid #eadba1;
+    display: flex;
+    background-color: #fffae6;
+    -webkit-box-align: center;
+    -ms-box-align: center;
+    box-align: center;
+    text-align: center;
+    justify-content: center;
+    -webkit-box-pack: center;
+  }
+  button {
+    height: 38px;
+    vertical-align: middle;
+  }
+  [class^="el-icon-"], [class*=" el-icon-"] {
+    margin-top: -3px;
+
+  }
+  .el-button [class*=lx-icon-]+span {
+    margin-left: 10px;
+  }
+  .lx-icon-message {
+    color: #a7d9ee;
+    font-size: 22px;
+  }
+  .lx-icon-n-door {
+    color: #7b92c9;
+    font-size: 22px;
+  }
+  .lx-icon-radius-close {
+    color: #7b92c9;
+    font-size: 16px;
+  }
+}
+
+//优惠券计数器
+.coupon-card-list {
+  .lx-icon-minus {
+    font-size: @font-basic-size;
+    color: @color-primary;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -3px;
+  }
+
+  .bottom-con {
+    padding: 14px 0 0 20px;
+    position: relative;
+  }
+  .el-input-number--small {
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+  }
+  .num {
+    line-height: 30px;
+    color: #b8b8b8;
+  }
+  .el-card {
+    box-shadow: none;
+    border-radius: 4px 4px 0 4px;
+  }
+  .el-input__inner {
+    border-radius: 0;
+  }
+  .el-col-8 {
+    padding-left: 1.3%;
+    margin-top: 20px;
+  }
+  margin-left: -1.3%;
+  margin-bottom: 20px;
+}
+
+.el-dropdown{
+  .el-dropdown-link:hover{
+     color: @color-primary;
+  }
+}
+.el-collapse-item__wrap{
+  background: #fff;
+}
+.table-auto{
+  .el-table__body-wrapper{
+    overflow: auto;
+  }
+}
+.el-table {
+  &__header {
+    background: #eeeff6;
+    tr {
+      height: 40px;
+      line-height: 40px;
+    }
+    thead th {
+      background-color: #F6F7FB;
+      color: #333;
+      font-weight: bold;
+    }
+  }
+  &__body {
+    .cell {
+      color: #333;
+    }
+  }
+}
+
+.el-tabs__item {
+  font-size: 12px;
+}
+.el-tabs__nav-wrap::after {
+  background-color: #d8dce6;;
+}
+
+.el-form-item.is-success {
+  .el-textarea__inner, .el-input__inner {
+    border-color: #bfc5d9;
+  }
+}
+
+//图片懒加载中的样式
+img[lazy='loading']{
+  width: 40px !important;
+  margin: auto;
+}
+
+.fn-clear {
+  zoom: 1;
+}
+
+.fn-clear:after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0;
+  content: '.';
+}
+
+::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+  background-color: transparent
+}
+
+::-webkit-scrollbar-track{
+  background-color: transparent
+}
+
+::-webkit-scrollbar-thumb{
+  border-radius: 10px;
+  background-color: #bfbfbf
+}
+
+// date-picker 修复禁用样式丢失
+.el-date-table td.disabled div {
+  background-color: #F5F7FA;
+  opacity: 1;
+  cursor: not-allowed;
+  color: #C0C4CC;
+}

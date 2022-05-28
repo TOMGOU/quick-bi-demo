@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta  name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>经销店集团管理系统</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <!--[if IE]>
+      <script src="https://g.lxstatic.com/common/history.js"></script>
+    <![endif]-->
+    <script charset="utf-8" src="https://apis.map.qq.com/api/js?v=2.exp&key=STMBZ-K5HH5-LMKIB-QPNHM-HH74S-YLFNU"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="https://open.work.weixin.qq.com/wwopen/js/jwxwork-1.0.0.js"></script>
+    <script>
+      !function(window){
+        // 基准大小
+        const baseSize = 100
+        // 设置 rem 函数
+        function setRem () {
+          // 当前页面宽度相对于 1920宽的缩放比例，可根据自己需要修改。
+          const scale = document.documentElement.clientWidth / 1920
+          // 设置页面根节点字体大小（“Math.min(scale, 2)” 指最高放大比例为2，可根据实际业务需求调整）
+          document.documentElement.style.fontSize = baseSize * Math.min(scale, 2) + 'px'
+        }
+        // 初始化
+        setRem()
+        // 改变窗口大小时重新设置 rem
+        window.onresize = function () {
+          setRem()
+        }
+      }(window);
+    </script>
+  </head>
+
+  <body>
+    <noscript>
+      <strong>We're sorry but corp-master-frontend doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <%= htmlWebpackPlugin.files.runtime %>
+  </body>
+
+</html>

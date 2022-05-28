@@ -1,0 +1,3 @@
+const mockConfig = {}
+
+export default {}

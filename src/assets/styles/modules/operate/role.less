@@ -1,0 +1,136 @@
+@import "../../base/fn";
+.role-permission {
+  &__save-btn {
+    margin: 37px 0 0 25px;
+    padding: 8px 32px;
+  }
+  &__role-wrap {
+    width: @wrapper-main;
+    background: #fff;
+    border-radius: 4px;
+    display: flex;
+    position: relative;
+    .lx-icon-save{
+      font-size: @font-basic-size;
+      vertical-align: -1px;
+    }
+    .pad-lf {
+      padding: 0 20px;
+    }
+    .role-title {
+      line-height: 33px;
+      padding-top: 9px;
+      padding-bottom: 9px;
+      font-size: 14px;
+      color: #333;
+    }
+    .frame-box-edit{
+      position: absolute;
+      top:100%;
+      left: 60%;
+      background-color: #fff;
+      z-index: 99;
+      .box-edit-cancel {
+        margin-left: 8px;
+      }
+    }
+    .el-form{
+      padding: 0 4px 10px 14px;
+      border: 1px solid rgb(209, 214, 229);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .12);
+    }
+    .el-form-item{
+      margin-top:0;
+      margin-bottom: 0;
+      margin-right: 10px;
+    }
+    .el-input__inner{
+      width: 240px;
+      height: 32px;
+    }
+    .cl {
+      clear: both;
+    }
+    .lx-icon-check {
+      color: #a7d9ee;
+    }
+    .lx-icon-edit,
+    .lx-icon-delete,
+    .role-text-edit,
+    .role-text-del {
+      color: @color-primary !important;
+    }
+  }
+  &__role-list {
+    min-height: 1000px;
+    border-right: 1px solid #f2f3f4;
+    .active {
+      background-color: #eaf4ff;
+    }
+    a {
+      color: #333;
+      line-height: 48px;
+      display: inline-block;
+      width: 150px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .role-icon {
+      display: inline-block;
+      float: right;
+      line-height: 48px;
+      vertical-align: middle;
+      .role-text-edit {
+        padding-right: 10px;
+        padding-left: 10px;
+        vertical-align: middle;
+        cursor: pointer;
+      }
+      .role-text-del {
+        padding-left: 10px;
+        vertical-align: middle;
+        cursor: pointer;
+      }
+      i {
+        cursor: pointer;
+      }
+      .mr {
+        margin-right: 10px;
+      }
+    }
+    .info-item {
+      padding: 0 13px 0 27px;
+      position: relative;
+    }
+    .isEditBox {
+      display: block
+    }
+  }
+  &__role-left {
+    min-width: 260px;
+  }
+  &__role-right {
+    height: 100%;
+    flex: 1;
+    padding: 30px 0 20px;
+    border-left: 1px solid #f2f3f4;
+    margin-left: -1px;
+  }
+  &__add-role{
+    position: absolute;
+    top: 8px;
+    left: 240px;
+    background-color: #fff;
+    z-index: 3;
+    .el-input, .el-input__inner {
+      width: 240px;
+    }
+    .box-add-cancel {
+      margin-left: 8px;
+    }
+  }
+  .btns {
+    text-align: right;
+  }
+}

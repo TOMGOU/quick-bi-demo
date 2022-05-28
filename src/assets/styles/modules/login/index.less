@@ -1,0 +1,53 @@
+@import "../../base/fn";
+.login{
+  position: relative;
+  background: url(../../images/login-bg.jpg) center no-repeat;
+  width: 100%;
+  height: 100vh;
+  background-size: 100% 100vh;
+  &__content{
+    text-align: center;
+    img {
+      width: 650px;
+      margin: 245px 0 82px;
+      // padding: 0 540px;
+      box-sizing: border-box;
+    }
+    .login-button {
+      width: 301px;
+      margin: 0 auto;
+      .el-button--primary {
+        padding: 18px 80px;
+        border:0;
+        background-color: #1890ff;
+        box-shadow: 0px 2px 20px 0px rgba(54, 54, 54, 0.5);
+        border-radius: 0;
+      }
+      .lx-icon-scan, span {
+        font-size: 16px;
+        color: #fff;
+      }
+      .lx-icon-scan {
+        margin-right: 9px;
+      }
+      span {
+        vertical-align: middle;
+      }
+    }
+  }
+  &__footer {
+    width: 100%;
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+.footer-content {
+  padding-top: 10px;
+}
+.footer-item {
+  margin-right: 14px;
+  color: hsla(0,0%,100%,.4);
+}

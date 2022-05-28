@@ -1,0 +1,100 @@
+@import "fn";
+@import "normalize";
+html {
+  height: 100%;
+  font-size: @font-basic-size;
+  box-sizing: boder-box;
+}
+body{
+  line-height:1.4;
+  color:#333;
+  font-family:arial;
+  font-size: @font-basic-size;
+  background:white;
+}
+input, textarea, select{
+  font-size: @font-basic-size;
+  font-size:100%;
+  font-family: Helvetica Neue, Helvetica, microsoft yahei, sans-serif;
+  font-family:inherit;
+}
+body, h1 h2, h3, h4, h5, h6, p, ul, ol, form{
+  margin:0;
+}
+h3{
+  font-size: 14px;
+}
+h4, h5, h6{
+  font-size:1em;
+}
+ul, ol{
+  padding-left:0;
+  list-style-type:none;
+}
+a img, img{
+  border:0;
+}
+
+
+
+
+b, em, h1, h2, h3, h4, h5, h6, i, pre, th, ul {
+  // font-weight: 400;
+  font-style: normal;
+}
+
+caption, th {
+  text-align: left;
+}
+
+ul {
+  list-style: none outside;
+}
+
+a, ins {
+  text-decoration: none;
+}
+
+img {
+  border: 0;
+  max-width: 100%
+}
+
+button {
+  outline: 0;
+  border: none;
+  cursor: pointer;
+}
+
+input[type=text] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+a,
+button,
+input {
+  -webkit-tap-highlight-color: rgba(255, 0, 0, 0);
+}
+
+input::-webkit-input-placeholder,textarea::-webkit-input-placeholder {
+  color: #999 !important;
+}
+
+input:-moz-placeholder,textarea:-moz-placeholder {
+  color:#999 !important;
+}
+
+input:-ms-input-placeholder,textarea:-ms-input-placeholder {
+  color:#999 !important;
+}
+
+input, :focus {
+  outline: 0;
+}
+
+
+*, *:before, *.after {
+  box-sizing: inherit;
+}
+

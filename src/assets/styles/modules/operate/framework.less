@@ -1,0 +1,169 @@
+@import "../../base/fn";
+.framework{
+  .show-popover {
+    .el-popover {
+      display: inline-block !important;
+      right: 230px;
+      line-height: 1;
+    }
+  }
+  .tip-tags-box {
+    overflow-y: scroll;
+    scrollbar-color: transparent transparent;
+    scrollbar-track-color: transparent;
+    -ms-scrollbar-track-color: transparent;
+  }
+  &__content {
+    .el-tree {
+      border: none;
+      border-radius: 4px 0 0 4px;
+      margin-left: 10px;
+      border-right:1px solid #eee;
+      .lx-icon-circle-check2 {
+        margin-left: 5px;
+      }
+    }
+    .tab-content {
+      border-radius: 0 4px 4px 0;
+      margin-top: 0;
+      padding-bottom: 10px;
+      border-left: 1px solid #eee;
+      margin-left: -1px;
+    }
+    span
+    .el-dropdown {
+      color: #333;
+    }
+  }
+  .tree-article-b {
+    display: flex;
+    border-radius: 4px;
+    background: #fff;
+  }
+  &__left {
+    min-width: 260px;
+  }
+  &__right {
+    flex: 1;
+  }
+  .tab-content {
+    padding-top: 20px;
+  }
+  .el-tree{
+    padding-top: 10px;
+    color: #333;
+  }
+  .el-table{
+    overflow: visible;
+    color: #333;
+    .el-table__header {
+      background: #f6f7fb;
+      box-shadow: 1px 0px 0px 0px 
+        #fff;
+      tr {
+        height: 40px;
+        line-height: 40px;
+      }
+    }
+    .el-table__row {
+      height: 70px;
+      line-height: 70px;
+    }
+  }
+  .el-table__body-wrapper, .el-table td{
+    position: relative;
+  }
+  .tree-title {
+    padding: 30px 35px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    &:hover {
+      color: #333;
+    }
+  }
+  .tree-active {
+    color: #333;
+  }
+  &__tips {
+    margin: 11px 0 16px;
+    padding-left: 10px;
+    line-height: 32px;
+    background-color: #fef6ed;
+    color: #d59435;
+  }
+  &__operation-btn {
+    padding: 7px 11px;
+  }
+  .el-button--default {
+    border: solid 1px #d8dce6;
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  .el-input__inner {
+    border-color: #d8dce6 !important;
+    color: #333;
+  }
+  .el-input__inner:focus {
+    border-color: #1890ff!important;
+  }
+  &__pagination {
+    margin-top: 15px;
+  }
+
+  .edit-mobile-popover{
+    .el-popover{
+      right: 150px!important;
+    }
+  }
+  .edit-mobile {
+    padding: 5px 15px 15px;
+    &__header {
+      height: 34px;
+      line-height: 34px;
+      display: flex;
+      justify-content: space-between;
+      .el-button--text {
+        color: #999;
+      }
+    }
+    &__body {
+      padding: 5px 0 15px;
+      .el-input {
+        margin-bottom: 10px;
+      }
+    }
+    &__footer {
+      text-align: right;
+    }
+  }
+  .el-table__body-wrapper {
+    overflow: initial;
+  }
+  .el-form-item {
+    margin-bottom: 0;
+  }
+  .el-checkbox__label {
+    width: 125px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+    overflow: hidden;
+  }
+}
+.el-dropdown-menu {
+  width: 120px;
+  background-color: #fff;
+}
+.el-dropdown-menu__item:not(.is-disabled):hover {
+  background: #eee;
+  color: initial;
+}
+.delete-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    padding-left: 5px;
+  }
+}

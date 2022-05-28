@@ -1,0 +1,157 @@
+image: cr.cheanjiait.com/build/node:8.10.0
+
+stages:
+  - prepare
+  - build
+  - report
+  - docker
+  - qatest
+  - canary
+  - production
+
+variables:
+  TEST_KUBE_REPLICAS: 2
+  PRODUCTION_KUBE_REPLICAS: 3
+
+prepare:dependency:
+  stage: prepare
+  script:
+    - npm install --quiet --registry=https://registry.npmjs.org
+  cache:
+    key: node_module
+    paths:
+    - node_modules
+
+build:webpack:
+  stage: build
+  cache:
+    key: node_module
+    policy: pull
+    paths:
+    - node_modules
+  artifacts:
+    paths:
+    - www/
+  before_script:
+    - export BUILD_TASK=$([ "$CI_COMMIT_REF_NAME" == "master" ] && echo "build" || echo "build-test")
+    - export VERSION_AUTHOR=$(git log -1 --no-merges --pretty=format:"%an" | sed 's/[ ][ ]*/_/g')
+    - echo "latest version author:"$VERSION_AUTHOR
+  script:
+    - npm run $BUILD_TASK
+  only:
+    - branches
+  except:
+    - /^wip-.*$/
+
+docker:cdn:
+  stage: docker
+  script:
+    - echo "uploading www to cdn..."
+    - npm run cdn
+    - echo "uploaded www to cdn"
+  cache:
+    key: node_module
+    policy: pull
+    paths:
+    - node_modules
+  only:
+    - master
+
+docker:build:
+  stage: docker
+  before_script:
+    - export DOCKER_IMAGE_NAME=$([ "$CI_COMMIT_REF_NAME" == "master" ] && echo "${CI_PROJECT_NAME}" || echo "${CI_PROJECT_NAME}-test")
+    - export DOCKER_IMAGE=${CI_REGISTRY_IMAGE}/${DOCKER_IMAGE_NAME}:${CI_COMMIT_SHA:0:8}
+    - echo $DOCKER_IMAGE
+  script:
+    - docker build -t $DOCKER_IMAGE .
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push $DOCKER_IMAGE
+  only:
+    - branches
+  except:
+    - /^wip-.*$/
+
+report:complexity:
+  stage: report
+  script:
+    - npm run cdn:complexity
+  cache:
+    key: node_module
+    policy: pull
+    paths:
+      - node_modules
+  only:
+    - master
+
+qatest:deploy:
+  stage: qatest
+  image: cr.cheanjiait.com/build/trick:0.2
+  environment:
+    name: test
+    url: https://g.test.dos.lixinchuxing.cn
+  script:
+    - trick config init
+    - trick deploy corp-master-frontend
+  artifacts:
+    name: "kube-deploy.${CI_JOB_STAGE}"
+    paths:
+      - kube-deploy
+  dependencies: []
+  when: manual
+  except:
+    - /^test.*$/
+
+deploy:autoDeploy:
+  stage: qatest
+  image: cr.cheanjiait.com/build/trick:0.2
+  environment:
+    name: test
+    url: https://g.test.dos.lixinchuxing.cn
+  script:
+    - trick config init
+    - trick deploy corp-master-frontend
+  artifacts:
+    name: "kube-deploy.${CI_JOB_STAGE}"
+    paths:
+      - kube-deploy
+  dependencies: []
+  only:
+    - /^test.*$/
+
+
+canary:deploy:
+  stage: canary
+  image: cr.cheanjiait.com/build/trick:0.2
+  environment:
+    name: production
+    url: https://g.dos.lixinchuxing.com
+  script:
+    - trick config init
+    - trick canary corp-master-frontend
+  artifacts:
+    name: "kube-deploy.${CI_JOB_STAGE}"
+    paths:
+      - kube-deploy
+  dependencies: []
+  when: manual
+  only:
+    - master
+
+production:deploy:
+  stage: production
+  image: cr.cheanjiait.com/build/trick:0.2
+  environment:
+    name: production
+    url: https://g.dos.lixinchuxing.com
+  script:
+    - trick config init
+    - trick deploy corp-master-frontend
+  artifacts:
+    name: "kube-deploy.${CI_JOB_STAGE}"
+    paths:
+      - kube-deploy
+  dependencies: []
+  when: manual
+  only:
+    - master

@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: __DEPLOY_NAME__
+  labels:
+    app: dos-corp-master
+    tier: frontend
+    release: __RELEASE__
+spec:
+  replicas: __REPLICAS__
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: dos-corp-master
+        tier: frontend
+        release: __RELEASE__
+    spec:
+      containers:
+      - name: frontend
+        image: __IMAGE__
+        ports:
+        - name: http
+          containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 1
