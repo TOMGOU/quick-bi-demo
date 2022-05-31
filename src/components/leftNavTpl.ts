@@ -20,7 +20,7 @@ export const leftNav: Menus[] = [
   },
   {
     name: 'Low-Code',
-    icon: 'lx-icon-document',
+    icon: 'el-icon-setting',
     path: '',
     submenus: [
       {
