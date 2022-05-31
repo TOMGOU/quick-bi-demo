@@ -9,8 +9,8 @@ pkg.version += process.env.VERSION_AUTHOR;
 const isProduction = process.env.NODE_ENV === 'production';
 const isDev = process.env.NODE_ENV === 'development';
 const isQatest = process.env.RUN_ENV === 'testing';
-const baseUrl = 'https://g.lxstatic.com/dos/corp-master/';
-const cdnCommon = 'https://g.lxstatic.com/common/';
+const baseUrl = './';
+const cdnCommon = './';
 module.exports = {
   devServer: {
     port: 8000,

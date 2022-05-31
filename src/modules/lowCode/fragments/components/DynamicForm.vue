@@ -266,6 +266,7 @@ export default class DynamicForm extends Vue {
       for (let i = 0; i < this.options.length; i++) {
         const obj = this.options[i];
         if (Object.prototype.toString.call(obj) == "[object Object]") {
+          // this.deepClone 不存在
           this.formData[this.options[i].name] = this.deepClone(
             this.options[i].value
           );

@@ -45,6 +45,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, namespace } from 'vuex-class'
 
 const biCharts = namespace('biCharts')
+console.log({ charts, containers, basics })
 
 @Component
 export default class ConfigPanel extends Vue {
