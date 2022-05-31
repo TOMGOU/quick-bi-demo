@@ -1,27 +1,18 @@
 <template>
   <section class="public-session">
-    <top-title @handleFullScreen="handleFullScreen" :sessionName="sessionName" :title="reportName" :summaryName="summaryName"></top-title>
+    <top-title @handleFullScreen="handleFullScreen" :sessionName="sessionName"></top-title>
     <div class="public-session__container">
       <div class="public-session__box">
         <bar-line :option="option1" :loading="loading" title="日拍卖趋势图"></bar-line>
         <bar-line :option="option4" :loading="loading" title="周成交趋势图"></bar-line>
-        <bar-line :option="option5" :loading="loading" title="月成交趋势图"></bar-line>
+        <bar-line :option="option5" :loading="loading" title="月成交趋势图"></bar-line> 
       </div>
       <div class="public-session__box">
         <div class="public-session__map-box">
           <top-data :mapData="mapData"></top-data>
           <Map :option="option2"></Map>
           <map-tips :sessionName="sessionName" :sessionAuctions="sessionAuctions" :sessionAuctionRate="sessionAuctionRate"></map-tips>
-          <map-table :tableData="tableData">
-            <template #control>
-              <switch-control-bar
-                :title='sessionName'
-                :bool="!!timer"
-                @handleChangeSession="handleChangeSession"
-                @handleTriggerAuto="handleTriggerAuto"
-              />
-            </template>
-          </map-table>
+          <map-table :tableData="tableData" :sessionName="sessionName" :bool="!!timer" @handleChangeSession="handleChangeSession" @handleTriggerAuto="handleTriggerAuto"></map-table>
         </div>
         <bar-line :option="option3" :loading="loading" title="关闭订单及争议订单">
           <div class="pie-title" v-if="!loading">
@@ -39,18 +30,18 @@
   </section>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Mutation } from 'vuex-class'
+import Message from '@lx-frontend/wrap-element-ui/packages/singleMessage';
 import eCharts from 'vue-echarts'
 import * as echarts from 'echarts'
-import BarLine from './components/BarLine.vue'
-import SwitchControlBar from './components/SwitchControlBar.vue';
-import TopTitle from './components/TopTitle.vue'
-import TopData from './components/TopData.vue'
-import MapTable from './components/MapTable.vue'
-import MapTips from './components/MapTips.vue'
-import Map from './components/Map.vue'
+import BarLine from './components/charts/BarLine.vue'
+import TopTitle from './components/basics/TopTitle.vue'
+import TopData from './components/basics/TopData.vue'
+import MapTable from './components/basics/MapTable.vue'
+import MapTips from './components/basics/MapTips.vue'
+import Map from './components/charts/Map.vue'
 const china = require('./map/china.json')
 
 const myItemStyle = {
@@ -58,7 +49,7 @@ const myItemStyle = {
     areaColor: '#ffde81', // #554E3E
     color: "#ffde81",
     borderColor: "#ffde81",
-    borderWidth: 1,
+    borderWidth: 0,
     borderType: "solid",
     label: { show: false }
   },
@@ -66,7 +57,7 @@ const myItemStyle = {
     areaColor: '#ffde81',
     color: "#ffde81",
     borderColor: "#ffde81",
-    borderWidth: 1,
+    borderWidth: 0,
     borderType: "solid",
     label: { show: false }
   },
@@ -74,7 +65,6 @@ const myItemStyle = {
 
 @Component({
   components: {
-    SwitchControlBar,
     chart: eCharts,
     BarLine,
     TopTitle,
@@ -87,17 +77,15 @@ const myItemStyle = {
 export default class PublicSession extends Vue {
   @Mutation('UPDATE_NAV') updateNav
   @Mutation('UPDATE_CRUMB') hideCrumb
-  private reportName = '公开场数据监控'
-  private summaryName = '公开场'
   private counter = 30000
   private fontSize = 12
   private timer = null
-  private loading = false
-  private currentIndex = -1
-  private sessionName = '豫车市专场'
+  private loading = true
+  private currentIndex = 0
+  private sessionName = '--'
   private sessionAuctions = 0
   private sessionAuctionRate = '0%'
-  private mapHLData = [{ name: '河南省', value: 40689, itemStyle: myItemStyle }]
+  private mapHLData = []
   private option1: any = {}
   private option2: any = {}
   private option3: any = {}
@@ -110,53 +98,53 @@ export default class PublicSession extends Vue {
   private mapData: any = [
     {
       title: '今日上拍量',
-      value: 2000
+      value: 0
     },
     {
       title: '今日店均上拍量',
-      value: 35
+      value: 0
     },
     {
       title: '本月上拍台数',
-      value: 6000
+      value: 0
     },
     {
       title: '本月店均成交台数',
-      value: 860
+      value: 0
     },
   ]
   private tableData: any = [
     {
-      store_name: '经销店1',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
     {
-      store_name: '经销店2',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
     {
-      store_name: '经销店3',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
     {
-      store_name: '经销店4',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
     {
-      store_name: '经销店5',
-      auctions: '500',
-      auction_rate: '70%'
+      store_name: '--',
+      auctions: '0',
+      auction_rate: '0%'
     },
   ]
   private sessions = []
-  private closedOrder = 10
-  private closedOrderGrowthRate = '70'
-  private arguedOrder = 25
-  private arguedOrderGrowthRate = '15'
+  private closedOrder = 0
+  private closedOrderGrowthRate = '--'
+  private arguedOrder = 0
+  private arguedOrderGrowthRate = '--'
 
   async mounted () {
     this.setFontSize()
@@ -168,11 +156,9 @@ export default class PublicSession extends Vue {
     this.initOption6()
     this.initOption7()
     this.initOption8()
+    // await this.fetchData()
+    // this.timer = setInterval(this.fetchData, 60000)
     // this.handleSetTimer()
-    this.handleChangeSession(true)
-    this.timer = setInterval(() => {
-      this.handleChangeSession(true)
-    }, 3000)
   }
 
   async fetchData () {
@@ -235,236 +221,103 @@ export default class PublicSession extends Vue {
   /**
    * 场次切换
    */
-  handleChangeSession (bool) {
-    const test = [
-      {
-        name: '河南专场',
-        value: 5000,
-        rate: '70%',
-        province: ['河南省']
-      },
-      {
-        name: '华南专场',
-        value: 5000,
-        rate: '70%',
-        province: ['广东省', '广西壮族自治区', '四川省', '湖南省', '贵州省', '重庆市', '海南省']
-      },
-      {
-        name: '华北专场',
-        value: 5000,
-        rate: '70%',
-        province: ['湖北省', '江西省', '山东省', '河北省', '山西省', '陕西省', '甘肃省', '宁夏回族自治区', '内蒙古自治区']
-      },
-      {
-        name: '华西专场',
-        value: 5000,
-        rate: '70%',
-        province: ['云南省', '新疆维吾尔自治区', '西藏自治区', '青海省']
-      },
-      {
-        name: '华东专场',
-        value: 5000,
-        rate: '70%',
-        province: ['浙江省', '福建省', '安徽省', '江苏省', '上海市']
-      }
-    ]
-    const len = test.length
-    this.currentIndex = bool ? (this.currentIndex + 1) % len : (this.currentIndex - 1 + len) % len
-    this.sessionName = test[this.currentIndex].name
-    this.sessionAuctions = +(Math.random() * 5000).toFixed(0) + 1000
-    this.sessionAuctionRate = (Math.random() * 100).toFixed(1) + '%'
+  async handleChangeSession (bool) {
+    const lens = this.sessions.length
+    this.currentIndex = bool ? (this.currentIndex + 1) % lens : (this.currentIndex - 1 + lens) % lens
+    this.sessionName = this.sessions[this.currentIndex].name
+    
+    const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.getPublicSessionData({ id: this.sessions[this.currentIndex].id }) || {}
+    if (code !== 0) return
+
     // 中央地图数据更新
-    this.option2.series[0].data = test[this.currentIndex].province.map(item => ({name: item, itemStyle: myItemStyle}))
+    this.sessionAuctions = data.global_auctions.session_auctions
+    this.sessionAuctionRate = data.global_auctions.session_auction_rate + '%'
+    this.option2.series[0].data = data.global_auctions.provinces.map(item => ({name: item, itemStyle: myItemStyle}))
     this.mapData = [
       {
         title: '今日上拍量',
-        value: +(Math.random() * 10000).toFixed(0) + 5000
+        value: data.global_auctions.today_auctions
       },
       {
         title: '今日店均上拍量',
-        value: +(Math.random() * 100).toFixed(0) + 10
+        value: data.global_auctions.today_auctions_per_store
       },
       {
         title: '本月上拍台数',
-        value: +(Math.random() * 5000).toFixed(0) + 1000
+        value: data.global_auctions.month_auctions
       },
       {
         title: '本月店均成交台数',
-        value: +(Math.random() * 3000).toFixed(0) + 1000
+        value: data.global_auctions.month_transactions_per_store
       },
     ]
-    this.tableData = [
-      {
-        store_name: '经销店1',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-      {
-        store_name: '经销店2',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-      {
-        store_name: '经销店3',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-      {
-        store_name: '经销店4',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-      {
-        store_name: '经销店5',
-        auctions: (Math.random() * 900).toFixed(0),
-        auction_rate: (Math.random() * 100).toFixed(0) + '%'
-      },
-    ]
+    this.tableData = data.global_auctions.top5
 
     // 日拍趋势图数据更新
-    this.option1.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option1.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option1.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option1.xAxis.data = data.daily_auctions_trend.dates
+    this.option1.series[0].data = data.daily_auctions_trend.auctions
+    this.option1.series[1].data = data.daily_auctions_trend.solds
+    this.option1.series[2].data = data.daily_auctions_trend.sold_rates
 
     // 关闭订单及争议订单图数据更新
-    this.option3.series[0].data[0].value = (Math.random() * 100).toFixed(0)
+    this.closedOrder = data.closed_and_argued_orders.closed_order.total
+    this.closedOrderGrowthRate = data.closed_and_argued_orders.closed_order.growth_rate
+    this.arguedOrder = data.closed_and_argued_orders.argued_order.total
+    this.arguedOrderGrowthRate = data.closed_and_argued_orders.argued_order.growth_rate
+    this.option3.series[0].data[0].value = data.closed_and_argued_orders.closed_order.closed_rate
     this.option3.series[1].data = [
-      {value: (Math.random() * 50).toFixed(0), name: '处理中'},
-      {value: (Math.random() * 50).toFixed(0), name: '支持经销店'},
-      {value: (Math.random() * 50).toFixed(0), name: '支持车商'},
+      {value: data.closed_and_argued_orders.argued_order.in_process_orders, name: '处理中'},
+      {value: data.closed_and_argued_orders.argued_order.support_dealer_orders, name: '支持车商'},
+      {value: data.closed_and_argued_orders.argued_order.support_store_orders, name: '支持经销店'},
     ]
 
     // 周成交趋势图数据更新
-    this.option4.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option4.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option4.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option4.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option4.xAxis.data = data.weekly_transactions_trend.dates
+    this.option4.series[0].data = data.weekly_transactions_trend.auctions
+    this.option4.series[1].data = data.weekly_transactions_trend.solds
+    this.option4.series[2].data = data.weekly_transactions_trend.transactions
+    this.option4.series[3].data = data.weekly_transactions_trend.transaction_rates
 
     // 月成交率趋势图数据更新
-    this.option5.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option5.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option5.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option5.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option5.xAxis.data = data.monthly_transactions_trend.dates
+    this.option5.series[0].data = data.monthly_transactions_trend.auctions
+    this.option5.series[1].data = data.monthly_transactions_trend.solds
+    this.option5.series[2].data = data.monthly_transactions_trend.matches
+    this.option5.series[3].data = data.monthly_transactions_trend.transaction_rates
 
     // 周毛利、毛利率趋势图数据更新
-    this.option6.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option6.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option6.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option6.xAxis.data = data.weekly_gross_profit_and_rate_trend.dates
+    this.option6.series[0].data = data.weekly_gross_profit_and_rate_trend.gross_profits
+    this.option6.series[1].data = data.weekly_gross_profit_and_rate_trend.gross_profit_rates
+    this.option6.series[2].data = data.weekly_gross_profit_and_rate_trend.month_gross_profit_rates
 
     // 车商活跃趋势图数据更新
-    this.option7.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option7.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option7.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option7.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
-    this.option7.series[4].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option7.xAxis.data = data.dealers_activity_trend.dates
+    this.option7.series[0].data = data.dealers_activity_trend.monthly_visitors
+    this.option7.series[1].data = data.dealers_activity_trend.monthly_participants
+    this.option7.series[2].data = data.dealers_activity_trend.monthly_bidders
+    this.option7.series[3].data = data.dealers_activity_trend.weekly_visitors
+    this.option7.series[4].data = data.dealers_activity_trend.weekly_participants
+    this.option7.series[5].data = data.dealers_activity_trend.weekly_bidders
 
     // 月成交率趋势图数据更新
-    this.option8.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
-    this.option8.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option8.yAxis.data = data.monthly_gross_profit_and_rate_trend.dates
+    this.option8.series[0].data = data.monthly_gross_profit_and_rate_trend.gross_profits
+    this.option8.series[1].data = data.monthly_gross_profit_and_rate_trend.gross_profit_rates
+
+    // 关闭 loading 效果
+    this.loading = false
   }
-
-  // async handleChangeSession (bool) {
-  //   const lens = this.sessions.length
-  //   this.currentIndex = bool ? (this.currentIndex + 1) % lens : (this.currentIndex - 1 + lens) % lens
-  //   this.sessionName = this.sessions[this.currentIndex].name
-
-  //   const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.getPublicSessionData({ id: this.sessions[this.currentIndex].id }) || {}
-  //   if (code !== 0) return
-
-  //   // 更新报表名称与场次汇总名称
-  //   this.reportName = data.public_report_name || '公开场数据监控'
-  //   this.summaryName = data.public_report_summary_name || '公开场'
-  //   // 中央地图数据更新
-  //   this.sessionAuctions = data.global_auctions.session_auctions
-  //   this.sessionAuctionRate = data.global_auctions.session_auction_rate + '%'
-  //   this.option2.series[0].data = data.global_auctions.provinces.map(item => ({name: item, itemStyle: myItemStyle}))
-  //   this.mapData = [
-  //     {
-  //       title: '今日上拍量',
-  //       value: data.global_auctions.today_auctions
-  //     },
-  //     {
-  //       title: '今日店均上拍量',
-  //       value: data.global_auctions.today_auctions_per_store
-  //     },
-  //     {
-  //       title: '本月上拍台数',
-  //       value: data.global_auctions.month_auctions
-  //     },
-  //     {
-  //       title: '本月店均成交台数',
-  //       value: data.global_auctions.month_transactions_per_store
-  //     },
-  //   ]
-  //   this.tableData = data.global_auctions.top5
-
-  //   // 日拍趋势图数据更新
-  //   this.option1.xAxis.data = data.daily_auctions_trend.dates
-  //   this.option1.series[0].data = data.daily_auctions_trend.auctions
-  //   this.option1.series[1].data = data.daily_auctions_trend.solds
-  //   this.option1.series[2].data = data.daily_auctions_trend.sold_rates
-
-  //   // 关闭订单及争议订单图数据更新
-  //   this.closedOrder = data.closed_and_argued_orders.closed_order.total
-  //   this.closedOrderGrowthRate = data.closed_and_argued_orders.closed_order.growth_rate
-  //   this.arguedOrder = data.closed_and_argued_orders.argued_order.total
-  //   this.arguedOrderGrowthRate = data.closed_and_argued_orders.argued_order.growth_rate
-  //   this.option3.series[0].data[0].value = data.closed_and_argued_orders.closed_order.closed_rate
-  //   this.option3.series[1].data = [
-  //     {value: data.closed_and_argued_orders.argued_order.in_process_orders, name: '处理中'},
-  //     {value: data.closed_and_argued_orders.argued_order.support_dealer_orders, name: '支持车商'},
-  //     {value: data.closed_and_argued_orders.argued_order.support_store_orders, name: '支持经销店'},
-  //   ]
-
-  //   // 周成交趋势图数据更新
-  //   this.option4.xAxis.data = data.weekly_transactions_trend.dates
-  //   this.option4.series[0].data = data.weekly_transactions_trend.auctions
-  //   this.option4.series[1].data = data.weekly_transactions_trend.solds
-  //   this.option4.series[2].data = data.weekly_transactions_trend.transactions
-  //   this.option4.series[3].data = data.weekly_transactions_trend.transaction_rates
-
-  //   // 月成交率趋势图数据更新
-  //   this.option5.xAxis.data = data.monthly_transactions_trend.dates
-  //   this.option5.series[0].data = data.monthly_transactions_trend.auctions
-  //   this.option5.series[1].data = data.monthly_transactions_trend.solds
-  //   this.option5.series[2].data = data.monthly_transactions_trend.matches
-  //   this.option5.series[3].data = data.monthly_transactions_trend.transaction_rates
-
-  //   // 周毛利、毛利率趋势图数据更新
-  //   this.option6.xAxis.data = data.weekly_gross_profit_and_rate_trend.dates
-  //   this.option6.series[0].data = data.weekly_gross_profit_and_rate_trend.gross_profits
-  //   this.option6.series[1].data = data.weekly_gross_profit_and_rate_trend.gross_profit_rates
-  //   this.option6.series[2].data = data.weekly_gross_profit_and_rate_trend.month_gross_profit_rates
-
-  //   // 车商活跃趋势图数据更新
-  //   this.option7.xAxis.data = data.dealers_activity_trend.dates
-  //   this.option7.series[0].data = data.dealers_activity_trend.monthly_visitors
-  //   this.option7.series[1].data = data.dealers_activity_trend.monthly_participants
-  //   this.option7.series[2].data = data.dealers_activity_trend.monthly_bidders
-  //   this.option7.series[3].data = data.dealers_activity_trend.weekly_visitors
-  //   this.option7.series[4].data = data.dealers_activity_trend.weekly_participants
-  //   this.option7.series[5].data = data.dealers_activity_trend.weekly_bidders
-
-  //   // 月成交率趋势图数据更新
-  //   this.option8.yAxis.data = data.monthly_gross_profit_and_rate_trend.dates
-  //   this.option8.series[0].data = data.monthly_gross_profit_and_rate_trend.gross_profits
-  //   this.option8.series[1].data = data.monthly_gross_profit_and_rate_trend.gross_profit_rates
-
-  //   // 关闭 loading 效果
-  //   this.loading = false
-  // }
 
   /**
    * 场次自动切换暂停和开启操作
    */
   handleTriggerAuto() {
     if (this.timer) {
-      clearTimeout(this.timer)
+      clearInterval(this.timer)
       this.timer = null
     } else {
-      this.timer = setInterval(() => {
-        this.handleChangeSession(true)
-      }, 3000)
+      this.handleSetTimer()
     }
   }
 
@@ -474,6 +327,7 @@ export default class PublicSession extends Vue {
   async handleSetTimer() {
     clearTimeout(this.timer)
     await this.fetchData()
+    console.log({id: this.sessions[this.currentIndex].id, counter: this.counter})
     this.counter = this.sessions[this.currentIndex].id ? 30000 : 60000
     this.timer = setTimeout(this.handleSetTimer, this.counter)
   }
@@ -542,7 +396,7 @@ export default class PublicSession extends Vue {
               color: 'transparent',
             }
           },
-          axisLabel: {
+          axisLabel: {  
             show: false,
             formatter: '{value}%',
             textStyle: {
@@ -553,9 +407,9 @@ export default class PublicSession extends Vue {
       ],
       legend: {
         data: [
-          { name: '上拍台次', icon: 'rect' },
-          { name: '拍出台次', icon: 'rect' },
-          { name: '台次拍出率' },
+          { name: '上拍台次', icon: 'rect' }, 
+          { name: '拍出台次', icon: 'rect' }, 
+          { name: '台次拍出率' }, 
         ],
         textStyle: {
           color: '#fff',
@@ -611,8 +465,7 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -628,7 +481,7 @@ export default class PublicSession extends Vue {
     }
   }
 
-  /**
+  /** 
    * 中央地图
   */
   initOption2 () {
@@ -688,7 +541,7 @@ export default class PublicSession extends Vue {
     };
   }
 
-  /**
+  /** 
    * 关闭订单及争议订单饼图
   */
  initOption3 () {
@@ -781,7 +634,7 @@ export default class PublicSession extends Vue {
         color: ['#ffc148', '#4992ff', '#0CF9FF'],
         data: [
           {
-            value: 10,
+            value: 10, 
             name: '处理中'
           },
           {
@@ -894,10 +747,10 @@ export default class PublicSession extends Vue {
       ],
       legend: {
         data: [
-          { name: '上拍台数', icon: 'rect' },
-          { name: '拍出台数', icon: 'rect' },
-          { name: '成交台数', icon: 'rect' },
-          { name: '成交率' },
+          { name: '上拍台数', icon: 'rect' }, 
+          { name: '拍出台数', icon: 'rect' }, 
+          { name: '成交台数', icon: 'rect' }, 
+          { name: '成交率' }, 
         ],
         textStyle: {
           color: '#fff',
@@ -967,8 +820,7 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -1055,9 +907,9 @@ export default class PublicSession extends Vue {
       ],
       legend: {
         data: [
-          { name: '上拍台数', icon: 'rect' },
-          { name: '拍出台数', icon: 'rect' },
-          { name: '撮合台数', icon: 'rect' },
+          { name: '上拍台数', icon: 'rect' }, 
+          { name: '拍出台数', icon: 'rect' }, 
+          { name: '撮合台数', icon: 'rect' }, 
           { name: '成交率' },
         ],
         textStyle: {
@@ -1134,8 +986,7 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -1222,7 +1073,7 @@ export default class PublicSession extends Vue {
       ],
       legend: {
         data: [
-          { name: '毛利', icon: 'rect' },
+          { name: '毛利', icon: 'rect' }, 
           { name: '毛利率' },
           { name: '月毛利率' },
         ],
@@ -1266,8 +1117,7 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -1360,12 +1210,12 @@ export default class PublicSession extends Vue {
       ],
       legend: {
         data: [
-          { name: '访问车商数(月)', icon: 'rect' },
-          { name: '参拍车商数(月)', icon: 'rect' },
-          { name: '中标车商数(月)', icon: 'rect' },
-          { name: '访问车商数(周)' },
-          { name: '参拍车商数(周)' },
-          { name: '中标车商数(周)' },
+          { name: '访问车商数(月)', icon: 'rect' }, 
+          { name: '参拍车商数(月)', icon: 'rect' }, 
+          { name: '中标车商数(月)', icon: 'rect' }, 
+          { name: '访问车商数(周)' }, 
+          { name: '参拍车商数(周)' }, 
+          { name: '中标车商数(周)' }, 
         ],
         width: 400,
         textStyle: {
@@ -1603,8 +1453,8 @@ export default class PublicSession extends Vue {
       },
       legend: {
         data: [
-          { name: '毛利', icon: 'rect' },
-          { name: '毛利率' },
+          { name: '毛利', icon: 'rect' }, 
+          { name: '毛利率' }, 
         ],
         textStyle: {
           color: '#fff',
@@ -1637,8 +1487,7 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
-            formatter: '{c}%',
+            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -1680,7 +1529,7 @@ export default class PublicSession extends Vue {
     width: 100%;
     height: 60vh;
   }
-
+  
   .pie-title {
     position: absolute;
     z-index: 2;

@@ -3,28 +3,31 @@ export default [
     path: '/biCharts/publicSession',
     component: resolve => import(/* webpackChunkName: "PublicSession" */ '../PublicSession.vue').then(resolve),
     meta: {
-      title: '公开场数据监控',
+      title: 'BI看板',
       nav: '/biCharts/publicSession',
       breadCrumb: 'BI看板/公开场数据监控',
       noneKeepAlive: true,
     },
   },
-  { // 配置页面
-    path: '/biCharts/config',
-    component: resolve => import(/* webpackChunkName: "Config" */ '../Config.vue').then(resolve),
+  { // BI看板 - T计划&内部场数据监控
+    path: '/biCharts/tPlanSession',
+    component: resolve => import(/* webpackChunkName: "TPlanSession" */ '../TPlanSession.vue').then(resolve),
     meta: {
-      title: '配置页面',
-      nav: '/biCharts/config',
-      breadCrumb: 'BI报表/配置页面'
+      title: 'BI看板',
+      nav: '/biCharts/tPlanSession',
+      breadCrumb: 'BI看板/T计划&内部场数据监控',
+      noneKeepAlive: true,
     },
   },
-  { // 图表预览
-    path: '/biCharts/chart',
-    component: resolve => import(/* webpackChunkName: "Chart" */ '../Chart.vue').then(resolve),
+  // BI看板 - 平台车商监控
+  {
+    path: '/biCharts/platformCarDealer',
+    component: resolve => import(/* webpackChunkName: "TPlanSession" */ '../PlatformCarDealer.vue').then(resolve),
     meta: {
-      title: '图表预览',
-      nav: '/biCharts/chart',
-      breadCrumb: 'BI报表/图表预览'
+      title: 'BI看板',
+      nav: '/biCharts/platformCarDealer',
+      breadCrumb: 'BI看板/平台车商监控',
+      noneKeepAlive: true,
     },
   }
 ];

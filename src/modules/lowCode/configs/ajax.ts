@@ -9,12 +9,10 @@ export default {
   getPublicSession: ['get', '/bi_report/public_session_tmpls'],
   // 场次统计数据
   getPublicSessionData: ['get', '/bi_report/public_session_tmpls/:id'],
-  // T 计划场次统计数据
-  getTPlanSessionData: ['get', '/bi_report/inner_tmpls/auction_datas'],
-  // 获取topN省份
-  getTopProvinces: ['get', '/bi_report/usedcar_dealers_monitor/provinces'],
-  // 获取某个省份或全国的数据
-  getProvinceData: ['get', '/bi_report/usedcar_dealers_monitor/provinces/:province_code'],
-  // 获取地图geo
-  getMapGeo: ['get', '/bi_report/geo_map/:area_code']
+  // 保存图表配置数据
+  postChartsConfig: ['post', '/index/update', {baseUrl: 'http://127.0.0.1:8360/api/v1'}],
+  // 获取图表配置数据
+  fetchChartConfig: ['get', '/index/list', {baseUrl: 'http://127.0.0.1:8360/api/v1'}],
+  // 获取图表数据
+  fetchChartData: address => ['get', address, {baseUrl: 'http://127.0.0.1:8360/api/v1'}]
 }

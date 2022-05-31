@@ -53,8 +53,6 @@ export default class BreadCrumb extends Vue {
     }
 
     this.breadCrumbList = finalBreadCrumbStr.split('/').map(str => ({title: str}))
-
-    console.log(this.breadCrumbList)
   }
 }
 </script>

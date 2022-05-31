@@ -1,7 +1,7 @@
 export const leftNav: Menus[] = [
   {
-    name: 'BI报表',
-    icon: 'lx-icon-document',
+    name: 'BI看板',
+    icon: 'lx-icon-data',
     path: '',
     submenus: [
       {
@@ -9,8 +9,27 @@ export const leftNav: Menus[] = [
         path: '/biCharts/publicSession',
       },
       {
+        name: '内部场拍卖数据',
+        path: '/biCharts/tPlanSession',
+      },
+      {
+        name: '平台车商监控',
+        path: '/biCharts/platformCarDealer',
+      }
+    ]
+  },
+  {
+    name: 'Low-Code',
+    icon: 'lx-icon-document',
+    path: '',
+    submenus: [
+      {
+        name: '公开场数据监控',
+        path: '/lowCode/publicSession',
+      },
+      {
         name: '配置页面',
-        path: '/biCharts/config',
+        path: '/lowCode/config',
       }
     ]
   }
