@@ -51,6 +51,8 @@ class VerticalContainerParse extends Vue {
 }
 
 // @ts-ignore
+VerticalContainerParse.key = 'VerticalContainerParse'
+// @ts-ignore
 VerticalContainerParse.des = '纵向容器'
 
 export default VerticalContainerParse

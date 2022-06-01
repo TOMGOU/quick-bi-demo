@@ -985,6 +985,8 @@ class BarLineParse extends Vue {
 }
 
 // @ts-ignore
+BarLineParse.key = 'BarLineParse'
+// @ts-ignore
 BarLineParse.des = '混合图'
 // @ts-ignore
 BarLineParse.icon = 'lx-icon-data'

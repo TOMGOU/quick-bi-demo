@@ -46,6 +46,8 @@ class TopTitleParse extends Vue {
 }
 
 // @ts-ignore
+TopTitleParse.key = 'TopTitleParse'
+// @ts-ignore
 TopTitleParse.des = '图表标题'
 
 export default TopTitleParse

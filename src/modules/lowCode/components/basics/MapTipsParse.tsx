@@ -53,6 +53,8 @@ class MapTipsParse extends Vue {
 }
 
 // @ts-ignore
+MapTipsParse.key = 'MapTipsParse'
+// @ts-ignore
 MapTipsParse.des = '提示框'
 
 export default MapTipsParse

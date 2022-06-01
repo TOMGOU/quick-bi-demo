@@ -64,6 +64,8 @@ class TopDataParse extends Vue {
 }
 
 // @ts-ignore
+TopDataParse.key = 'TopDataParse'
+// @ts-ignore
 TopDataParse.des = '总览数据表格'
 
 export default TopDataParse

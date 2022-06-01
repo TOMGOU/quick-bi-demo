@@ -77,6 +77,8 @@ class MapTableParse extends Vue {
 }
 
 // @ts-ignore
+MapTableParse.key = 'MapTableParse'
+// @ts-ignore
 MapTableParse.des = '地图详情表格'
 
 export default MapTableParse

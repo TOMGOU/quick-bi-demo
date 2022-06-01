@@ -31,7 +31,7 @@
     <ul>
       <li v-for="(item, index) in charts" :key="index"
         class="components__item"
-        :draggable="true" @dragstart="handleDrag(item.name)"
+        :draggable="true" @dragstart="handleDrag(item.key)"
         >
         <i :class="item.icon"></i>
         <div class="components__des">{{ item.des }}</div>

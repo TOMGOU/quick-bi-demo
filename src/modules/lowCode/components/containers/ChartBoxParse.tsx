@@ -51,6 +51,8 @@ class ChartBoxParse extends Vue {
 }
 
 // @ts-ignore
+ChartBoxParse.key = 'ChartBoxParse'
+// @ts-ignore
 ChartBoxParse.des = '图表框'
 
 export default ChartBoxParse

@@ -50,6 +50,8 @@ class RootContainerParse extends Vue {
 }
 
 // @ts-ignore
+RootContainerParse.key = 'RootContainerParse'
+// @ts-ignore
 RootContainerParse.des = '根容器'
 
 export default RootContainerParse

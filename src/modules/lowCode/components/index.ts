@@ -21,25 +21,26 @@ const parsersList = parseReq.keys().map(item => {
 })
 const parsers = parseReq.keys().reduce((parsers, module) => {
   const mod = parseReq(module)
-  parsers[mod.default.name] = mod.default
+  parsers[mod.default.key] = mod.default
   return parsers
 }, {})
 
 const charts = parseChartsReq.keys().reduce((parsers, module) => {
   const mod = parseChartsReq(module)
-  parsers[mod.default.name] = mod.default
+  // parsers[mod.default.name] = mod.default
+  parsers[mod.default.key] = mod.default
   return parsers
 }, {})
 
 const containers = parseContainersReq.keys().reduce((parsers, module) => {
   const mod = parseContainersReq(module)
-  parsers[mod.default.name] = mod.default
+  parsers[mod.default.key] = mod.default
   return parsers
 }, {})
 
 const basics = parseBasicsReq.keys().reduce((parsers, module) => {
   const mod = parseBasicsReq(module)
-  parsers[mod.default.name] = mod.default
+  parsers[mod.default.key] = mod.default
   return parsers
 }, {})
 

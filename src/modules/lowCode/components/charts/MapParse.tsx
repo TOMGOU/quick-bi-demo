@@ -147,6 +147,8 @@ class MapParse extends Vue {
 }
 
 // @ts-ignore
+MapParse.key = 'MapParse'
+// @ts-ignore
 MapParse.des = '地图'
 // @ts-ignore
 MapParse.icon = 'lx-icon-address'

@@ -51,6 +51,8 @@ class HorizontalContainerParse extends Vue {
 }
 
 // @ts-ignore
+HorizontalContainerParse.key = 'HorizontalContainerParse'
+// @ts-ignore
 HorizontalContainerParse.des = '横向容器'
 
 export default HorizontalContainerParse
