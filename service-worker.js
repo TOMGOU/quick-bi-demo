@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.f2a058eeae87ce5b28c8eaefd5857663.js"
+  "precache-manifest.f8e7e209d3ec1dd2ee9c0fe9ee698683.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "dos-corp-master-frontend"});
