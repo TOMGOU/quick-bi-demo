@@ -15,7 +15,8 @@
     "cdn:dev": "gulp --prefix=dos/corp-master/dev",
     "cdn:complexity": "gulp complexity",
     "lint": "vue-cli-service lint",
-    "lint-fix": "eslint --fix --ext .js --ext .ts --ext .vue src/"
+    "lint-fix": "eslint --fix --ext .js --ext .ts --ext .vue src/",
+    "gh-pages": "./git.sh"
   },
   "dependencies": {
     "@lx-frontend/ajax": "^1.0.6",
