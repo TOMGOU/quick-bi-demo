@@ -80,6 +80,7 @@ export default class RenderEngine extends Vue {
       if (!_json.children) {
         this.$set(_json, 'children', [])
       }
+      console.log('parsers:', parsers, parsers[this.selectedType].options)
       const uuid = uuidv4()
       _json.children.push({
         type: this.selectedType,
