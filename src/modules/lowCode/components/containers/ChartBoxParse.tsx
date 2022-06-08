@@ -1,10 +1,50 @@
 import { Component, Vue } from 'vue-property-decorator';
 import ChartBox from './ChartBox.vue'
 import store from '@/vuex/store'
-const option = {
-  title: '图表标题',
-  cssStyle: {
-    height: 'calc((100vh - 165px) / 3)'
+import { handleOptionsData } from '../../utils'
+
+const options = {
+  code: 'ChartBox',
+  type: 'container',
+  label: '图表框',
+  icon: 'lx-icon-address',
+  options: {
+    config: [
+      {
+        type: 'el-input-text',
+        label: '组件名称',
+        name: 'layerName',
+        required: false,
+        placeholder: '',
+        value: '图表框',
+      },
+      {
+        type: 'vue-color',
+        label: '背景颜色',
+        name: 'background',
+        required: false,
+        placeholder: '',
+        value: ''
+      },
+    ],
+    cssStyle: [
+      {
+        type: 'el-input-text',
+        label: '容器宽度',
+        name: 'width',
+        required: false,
+        placeholder: '',
+        value: '30vw',
+      },
+      {
+        type: 'el-input-text',
+        label: '容器高度',
+        name: 'height',
+        required: false,
+        placeholder: '',
+        value: 'calc((100vh - 110px) / 3)',
+      },
+    ]
   }
 }
 
@@ -14,14 +54,16 @@ const option = {
   }
 })
 class ChartBoxParse extends Vue {
-  static option = option
+  static options: any = options
 
   render (h, section, children) {
+    const options = handleOptionsData(section.section.option.options)
     const _props = {
       props: {
-        cssStyle: section.section.option.cssStyle,
-        title: section.section.option.title,
-        jsonSchema: section.section
+        jsonSchema: section.section,
+        // @ts-ignore
+        title: options.cssStyle.title,
+        cssStyle: options.cssStyle,
       }
     }
     const _propsOn = {
@@ -54,5 +96,7 @@ class ChartBoxParse extends Vue {
 ChartBoxParse.key = 'ChartBoxParse'
 // @ts-ignore
 ChartBoxParse.des = '图表框'
+// @ts-ignore
+ChartBoxParse.icon = 'lx-icon-distributed-list'
 
 export default ChartBoxParse

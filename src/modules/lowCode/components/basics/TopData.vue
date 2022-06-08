@@ -55,8 +55,8 @@ export default class TopData extends Vue {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    margin-top: 60px;
-    padding: 0 20px;
+    // margin-top: 60px;
+    padding: 60px 20px 0;
   }
 
   &__title {

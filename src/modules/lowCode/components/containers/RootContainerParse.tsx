@@ -53,5 +53,7 @@ class RootContainerParse extends Vue {
 RootContainerParse.key = 'RootContainerParse'
 // @ts-ignore
 RootContainerParse.des = '根容器'
+// @ts-ignore
+RootContainerParse.icon = 'lx-icon-cou-detail'
 
 export default RootContainerParse

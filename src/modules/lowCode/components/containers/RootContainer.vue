@@ -25,6 +25,7 @@ export default class RootContainer extends Vue{
 
 <style scoped>
 .root-container {
+  position: relative;
   background-color: #0c1022;
   width: 100vw;
   height: 100vh;

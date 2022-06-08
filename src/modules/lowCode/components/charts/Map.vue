@@ -23,7 +23,7 @@ import * as echarts from 'echarts'
 export default class Map extends Vue {
   @Prop({ default: () => ({}) }) readonly option: any
   @Prop({ default: () => ({}) }) readonly cssStyle: any
-  @Prop({default: () => ({})}) jsonSchema
+  // @Prop({default: () => ({})}) jsonSchema
   private theme = require('../../theme/index.json')
 
   handleDrop (e) {

@@ -22,8 +22,6 @@ import WWOpenData from './WWOpenData';
 if (process.env.NODE_ENV !== 'production') {
   import('./debug');
 }
-// 数据上报
-const report = process.env.RUN_ENV === 'production' ? require('./report') : {};
 
 Vue.use(ElementUI);
 Vue.use(Qrcode);
@@ -51,7 +49,6 @@ new Vue({
   store, // vuex
   ajax, // api
   modules,
-  report, // sentry 数据上报
   wechat,
   WWOpenData,
   render: h => h(App),

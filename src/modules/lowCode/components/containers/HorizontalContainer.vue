@@ -2,7 +2,7 @@
   <div
     class="horizontal-container"
     @dragover.prevent @drop.stop="handleDrop"
-    :style="{...jsonSchema.option.cssStyle}"
+    :style="cssStyle"
   >
     <slot></slot>
   </div>
@@ -14,9 +14,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class HorizontalContainer extends Vue{
+  @Prop({default: () => ({})}) cssStyle
   @Prop({default: () => ({})}) jsonSchema
+  
 
   handleDrop (e) {
+    console.log({ e })
     this.$emit('drop', e, this)
   }
 }
@@ -24,6 +27,7 @@ export default class HorizontalContainer extends Vue{
 
 <style scoped>
 .horizontal-container {
+  position: relative;
   background-color: #eee;
   display: flex;
   flex-direction: row;

@@ -33,6 +33,7 @@ export default class ChartBox extends Vue {
 <style lang="less" scoped>
 .chart-box {
   height: calc((100vh - 165px) / 3);
+  margin: auto;
 
   &__mask{
     position: relative;
@@ -43,7 +44,6 @@ export default class ChartBox extends Vue {
     display: flex;
     justify-content: center;
     align-items:center;
-    // margin: 5px;
   }
 
   &__title {

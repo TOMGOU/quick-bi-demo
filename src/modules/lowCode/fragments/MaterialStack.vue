@@ -1,8 +1,5 @@
 <template>
   <section class="components">
-    <div class="components__title">
-      物料堆
-    </div>
     <div class="components__category">
       基础
     </div>
@@ -10,8 +7,9 @@
       <li v-for="(item, index) in basics" :key="index"
         class="components__item"
         :draggable="true" @dragstart="handleDrag(item.name)"
-        >
-        {{ item.des }}
+      >
+        <i :class="item.icon"></i>
+        <div class="components__des">{{ item.des }}</div>
       </li>
     </ul>
     <div class="components__category">
@@ -21,8 +19,9 @@
       <li v-for="(item, index) in containers" :key="index"
         class="components__item"
         :draggable="true" @dragstart="handleDrag(item.name)"
-        >
-        {{ item.des }}
+      >
+        <i :class="item.icon"></i>
+        <div class="components__des">{{ item.des }}</div>
       </li>
     </ul>
     <div class="components__category">
@@ -32,7 +31,7 @@
       <li v-for="(item, index) in charts" :key="index"
         class="components__item"
         :draggable="true" @dragstart="handleDrag(item.key)"
-        >
+      >
         <i :class="item.icon"></i>
         <div class="components__des">{{ item.des }}</div>
       </li>
@@ -45,7 +44,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, namespace } from 'vuex-class'
 
 const biCharts = namespace('biCharts')
-console.log({ charts, containers, basics })
 
 @Component
 export default class ConfigPanel extends Vue {
@@ -73,10 +71,11 @@ export default class ConfigPanel extends Vue {
     }
 
     &__category {
-      padding-left: 15px;
+      padding-left: 5px;
       font-size: 18px;
       font-weight: bold;
       text-align: left;
+      margin-top: 10px;
     }
 
     &__item {

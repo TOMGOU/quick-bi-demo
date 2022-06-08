@@ -1,12 +1,57 @@
 import { Component, Vue } from 'vue-property-decorator';
 import HorizontalContainer from './HorizontalContainer.vue'
 import store from '@/vuex/store'
-const option = {
-  cssStyle: {
-    border: '1px dashed #fff',
-    width: '100%',
-    height: 'calc(100vh - 100px)',
-    background: 'transparent',
+import { handleOptionsData } from '../../utils'
+
+const options = {
+  code: 'HorizontalContainer',
+  type: 'container',
+  label: '横向容器',
+  icon: 'lx-icon-address',
+  options: {
+    config: [
+      {
+        type: 'el-input-text',
+        label: '组件名称',
+        name: 'layerName',
+        required: false,
+        placeholder: '',
+        value: '横向容器',
+      },
+      {
+        type: 'vue-color',
+        label: '背景颜色',
+        name: 'background',
+        required: false,
+        placeholder: '',
+        value: ''
+      },
+    ],
+    cssStyle: [
+      {
+        type: 'el-input-text',
+        label: '容器宽度',
+        name: 'width',
+        required: false,
+        placeholder: '',
+        value: '100vw',
+      },
+      {
+        type: 'el-input-text',
+        label: '容器高度',
+        name: 'height',
+        required: false,
+        placeholder: '',
+        value: 'calc((100vh - 100px))',
+      },
+      {
+        type: 'vue-color',
+        label: '容器背景',
+        name: 'background',
+        required: false,
+        value: '#100B3F',
+      },
+    ]
   }
 }
 @Component({
@@ -15,13 +60,15 @@ const option = {
   }
 })
 class HorizontalContainerParse extends Vue {
-  static option = option
+  // static option = option
+  static options: any = options
 
   render (h, section, children) {
-    const _this = this
+    const options = handleOptionsData(section.section.option.options)
     const _props = {
       props: {
-        jsonSchema: section.section
+        jsonSchema: section.section,
+        cssStyle: options.cssStyle,
       }
     }
     const _propsOn = {
@@ -42,6 +89,7 @@ class HorizontalContainerParse extends Vue {
       }
     }
     return (
+      // @ts-ignore
       <HorizontalContainer
         { ..._props }
         { ..._propsOn }
@@ -54,5 +102,7 @@ class HorizontalContainerParse extends Vue {
 HorizontalContainerParse.key = 'HorizontalContainerParse'
 // @ts-ignore
 HorizontalContainerParse.des = '横向容器'
+// @ts-ignore
+HorizontalContainerParse.icon = 'lx-icon-solocit-list'
 
 export default HorizontalContainerParse

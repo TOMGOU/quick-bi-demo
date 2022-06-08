@@ -1,6 +1,6 @@
 <template>
   <section class="top-bar">
-    <div>顶栏</div>
+    <div>Low-Code 配置面板</div>
     <div class="top-bar__button-box">
       <el-button
         class="top-bar__full-screen"
@@ -15,7 +15,7 @@
         @click="handleSave"
         type="primary"
       >
-        <i class="lx-icon-full-screen top-bar__icon" ></i>
+        <i class="lx-icon-save top-bar__icon" ></i>
         保存
       </el-button>
     </div>

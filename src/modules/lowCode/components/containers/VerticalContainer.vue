@@ -3,7 +3,7 @@
     class="vertical-container"
     @dragover.prevent
     @drop.stop="handleDrop"
-    :style="{...jsonSchema.option.cssStyle}"
+    :style="cssStyle"
   >
     <draggable v-model="jsonSchema.children">
       <slot></slot>
@@ -26,10 +26,7 @@ import draggable from 'vuedraggable'
 })
 export default class VerticalContainer extends Vue{
   @Prop({default: () => ({})}) jsonSchema
-
-  mounted () {
-    console.log(this.jsonSchema)
-  }
+  @Prop({default: () => ({})}) cssStyle
 
   handleDrop (e) {
     this.$emit('drop', e, this)
@@ -39,6 +36,7 @@ export default class VerticalContainer extends Vue{
 
 <style scoped>
 .vertical-container {
+  position: relative;
   width: 33.3vw;
   height: calc(100vh - 110px);
   background: #0c1022;

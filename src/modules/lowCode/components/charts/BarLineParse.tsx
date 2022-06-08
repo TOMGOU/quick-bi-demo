@@ -25,7 +25,7 @@ const options = {
     config: [
       {
         type: 'el-input-text',
-        label: '图表名称',
+        label: '组件名称',
         name: 'layerName',
         required: false,
         placeholder: '',
@@ -104,14 +104,14 @@ const options = {
               placeholder: '',
               value: 10,
             },
-            {
-              type: 'el-slider',
-              label: '圆角',
-              name: 'radius',
-              require: false,
-              placeholder: '',
-              value: 5,
-            },
+            // {
+            //   type: 'el-slider',
+            //   label: '圆角',
+            //   name: 'radius',
+            //   require: false,
+            //   placeholder: '',
+            //   value: 5,
+            // },
             {
               type: 'el-slider',
               label: '最小高度',
@@ -131,7 +131,7 @@ const options = {
               name: 'isNoTitle',
               required: false,
               placeholder: '',
-              value: true
+              value: false
             },
             {
               type: 'el-input-text',
@@ -777,6 +777,14 @@ const options = {
     cssStyle: [
       {
         type: 'el-input-text',
+        label: '图表标题',
+        name: 'title',
+        required: false,
+        placeholder: '',
+        value: '日拍趋势图',
+      },
+      {
+        type: 'el-input-text',
         label: '图表宽度',
         name: 'width',
         required: false,
@@ -789,7 +797,7 @@ const options = {
         name: 'height',
         required: false,
         placeholder: '',
-        value: '30vh',
+        value: 'calc((100vh - 110px) / 3)',
       },
     ]
   }
@@ -955,7 +963,6 @@ class BarLineParse extends Vue {
       // @ts-ignore
       this.methods.dynamicDataFn(optionsData, option)
     }
-    console.log({option})
     const _propsOn = {
       nativeOn: {
         click: e => {
@@ -971,7 +978,8 @@ class BarLineParse extends Vue {
       props: {
         option: option,
         cssStyle: options.cssStyle,
-        // title: section.section.options.title,
+        // @ts-ignore
+        title: options.cssStyle.title,
       }
     }
     

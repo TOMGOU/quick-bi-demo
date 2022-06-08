@@ -103,7 +103,7 @@ export default class BarLine extends Vue {
   handleSetOption () {
     // @ts-ignore
     this.$refs.barLineChart && this.$refs.barLineChart.setOption(this.option, true)
-    console.log('this.option', this.option)
+    // console.log('this.option', this.option)
   }
 }
 </script>
@@ -111,6 +111,7 @@ export default class BarLine extends Vue {
 <style lang="less" scoped>
 .bar-line-box {
   position: relative;
+  margin: auto;
 }
 
 .bar-line {

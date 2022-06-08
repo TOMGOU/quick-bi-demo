@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
-const SentryWepackePlugin = require('webpack-sentry-plugin');
 const pkg = require('./package.json');
 // sentry上传版本以及对应的开发者
 pkg.version += process.env.VERSION_AUTHOR;
@@ -114,22 +113,6 @@ module.exports = {
       if (isQatest || !process.env.VERSION_AUTHOR) {
         return;
       }
-      config.plugin('sentry')
-        .use(SentryWepackePlugin, [{
-          include: /\.js(\.map)?$/,
-          ignore: ['node_modules'],
-          project: pkg.name,
-          organization: 'lixin',
-          apiKey: 'b2737e3121644bbfa8cdbff184c4217160c362fe229544558bfa51d1e64ea501',
-          release: pkg.version,
-          baseSentryURL: 'https://sentry.lixinio.com/api/0',
-          deleteAfterCompile: true, // 编译后是否删除本地的sourcemap
-          suppressConflictError: true, // 压制重复上传的冲突，以防抛出错误
-          filenameTransform (filename) { // 自定义需要输出的文件名
-            var urlObj = require('url').parse(baseUrl) // eslint-disable-line
-            return `~${urlObj.pathname.replace(/\/+$/, '')}/${filename}`;
-          },
-        }]);
     }
   },
 };

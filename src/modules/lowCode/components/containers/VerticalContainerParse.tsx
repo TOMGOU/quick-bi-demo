@@ -1,12 +1,57 @@
 import { Component, Vue } from 'vue-property-decorator';
 import VerticalContainer from './VerticalContainer.vue'
 import store from '@/vuex/store'
-const option = {
-  cssStyle: {
-    border: '1px dashed #fff',
-    width: '33.3vw',
-    height: 'calc(100vh - 110px)',
-    background: 'transparent',
+import { handleOptionsData } from '../../utils'
+
+const options = {
+  code: 'VerticalContainer',
+  type: 'container',
+  label: '纵向容器',
+  icon: 'lx-icon-address',
+  options: {
+    config: [
+      {
+        type: 'el-input-text',
+        label: '组件名称',
+        name: 'layerName',
+        required: false,
+        placeholder: '',
+        value: '纵向容器',
+      },
+      {
+        type: 'vue-color',
+        label: '背景颜色',
+        name: 'background',
+        required: false,
+        placeholder: '',
+        value: ''
+      },
+    ],
+    cssStyle: [
+      {
+        type: 'el-input-text',
+        label: '容器宽度',
+        name: 'width',
+        required: false,
+        placeholder: '',
+        value: '33.3vw',
+      },
+      {
+        type: 'el-input-text',
+        label: '容器高度',
+        name: 'height',
+        required: false,
+        placeholder: '',
+        value: 'calc(100vh - 100px)',
+      },
+      {
+        type: 'vue-color',
+        label: '容器背景',
+        name: 'background',
+        required: false,
+        value: '#100B2A',
+      },
+    ]
   }
 }
 
@@ -16,12 +61,14 @@ const option = {
   }
 })
 class VerticalContainerParse extends Vue {
-  static option = option
+  static options: any = options
 
   render (h, section, children) {
+    const options = handleOptionsData(section.section.option.options)
     const _props = {
       props: {
-        jsonSchema: section.section
+        jsonSchema: section.section,
+        cssStyle: options.cssStyle,
       }
     }
     const _propsOn = {
@@ -42,6 +89,7 @@ class VerticalContainerParse extends Vue {
       }
     }
     return (
+      // @ts-ignore
       <VerticalContainer
         { ..._props }
         { ..._propsOn }
@@ -54,5 +102,7 @@ class VerticalContainerParse extends Vue {
 VerticalContainerParse.key = 'VerticalContainerParse'
 // @ts-ignore
 VerticalContainerParse.des = '纵向容器'
+// @ts-ignore
+VerticalContainerParse.icon = 'lx-icon-deliver-boards'
 
 export default VerticalContainerParse

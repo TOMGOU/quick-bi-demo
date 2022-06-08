@@ -265,15 +265,16 @@ export default class DynamicForm extends Vue {
     if (this.options && this.options.length > 0) {
       for (let i = 0; i < this.options.length; i++) {
         const obj = this.options[i];
-        if (Object.prototype.toString.call(obj) == "[object Object]") {
+        if (Object.prototype.toString.call(obj) === "[object Object]") {
           // this.deepClone 不存在
-          this.formData[this.options[i].name] = this.deepClone(
-            this.options[i].value
-          );
+          // this.formData[this.options[i].name] = this.deepClone(
+          //   this.options[i].value
+          // );
+          this.formData[this.options[i].name] = this.options[i].value
           if (this.options[i].name === 'dataType') {
             this.notShowType = this.options[i].value
           }
-        } else if (Object.prototype.toString.call(obj) == "[object Array]") {
+        } else if (Object.prototype.toString.call(obj) === "[object Array]") {
           for (let j = 0; j < obj.length; j++) {
             const list = obj[j].list;
             list.forEach(el => {

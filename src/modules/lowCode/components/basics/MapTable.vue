@@ -1,8 +1,8 @@
 <template>
-  <section class="map-table">
-    <div class="map-table__table-box" v-if="tableData.length">
+  <section class="map-table" :style="cssStyle">
+    <div class="map-table__table-box" v-if="mapData.tableData.length">
       <el-table
-        :data="tableData"
+        :data="mapData.tableData"
         class="map-table__table"
       >
         <el-table-column
@@ -32,7 +32,7 @@
       <div class="map-table__icon-box">
         <i class="lx-icon-arrow-left" @click="handleChangeSession(false)"></i>
       </div>
-      <div class="map-table__session-name">{{ sessionName }}</div>
+      <div class="map-table__session-name">{{ mapData.sessionName }}</div>
       <div class="map-table__icon-box">
         <i class="lx-icon-arrow-right" @click="handleChangeSession(true)"></i>
       </div>
@@ -49,8 +49,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class TopData extends Vue {
-  @Prop({default: () => []}) readonly tableData: any[]
-  @Prop({default: '河南专场'}) readonly sessionName: string
+  // @Prop({default: () => []}) readonly tableData: any[]
+  // @Prop({default: '河南专场'}) readonly sessionName: string
+  @Prop({default: () => ({
+    sessionName: '河南专场',
+    tableData: [],
+  })}) readonly mapData: any
   @Prop({default: () => ({})}) readonly cssStyle: any
   @Prop({default: true}) readonly bool: boolean
 

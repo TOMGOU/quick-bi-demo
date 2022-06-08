@@ -1,7 +1,7 @@
 <template>
   <section class="map-tips" :style="cssStyle">
-    <div class="map-tips__name">{{ sessionName }}</div>
-    <div class="map-tips__data">{{ sessionAuctions }}，{{ formatter(sessionAuctionRate) }}</div>
+    <div class="map-tips__name">{{ tipsData.sessionName }}</div>
+    <div class="map-tips__data">{{ tipsData.sessionAuctions }}，{{ formatter(tipsData.sessionAuctionRate) }}</div>
   </section>
 </template>
 
@@ -10,9 +10,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class TopData extends Vue {
-  @Prop({default: '河南专场'}) readonly sessionName: string
-  @Prop({default: 5000}) readonly sessionAuctions: number
-  @Prop({default: '70.0%'}) readonly sessionAuctionRate: string
+  // @Prop({default: '河南专场'}) readonly sessionName: string
+  // @Prop({default: 5000}) readonly sessionAuctions: number
+  // @Prop({default: '70.0%'}) readonly sessionAuctionRate: string
+  @Prop({default: () => ({
+    sessionName: '河南专场',
+    sessionAuctions: 5000,
+    sessionAuctionRate: '70.0%'
+  })}) readonly tipsData: any
   @Prop({default: () => ({})}) readonly cssStyle: any
 
   formatter (item) {

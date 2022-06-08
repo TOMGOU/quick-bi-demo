@@ -32,11 +32,19 @@
       @json-change="handleJsonChange"
       @json-save="handleJsonSave"
     ></vue-json-editor> -->
+    <div class="config-panel__operate" v-if="jsonSchema && jsonSchema.children && jsonSchema.children.length">
+      组件操作：
+      <el-button
+        @click="handleDelete"
+        type="danger"
+      >删除选中组件</el-button>
+    </div>
 
     <el-tabs v-if="option.options" v-model="activeName" type="border-card" :stretch="true">
       <el-tab-pane
         name="first"
         label="配置"
+        v-if="option.options.config"
       >
         <dynamic-form
           ref="formData"
@@ -47,6 +55,7 @@
       <el-tab-pane
         name="second"
         label="数据"
+        v-if="option.options.data"
       >
         <dynamicForm
           ref="formData"
@@ -56,7 +65,8 @@
       </el-tab-pane>
       <el-tab-pane
         name="third"
-        label="样式"
+        label="其他"
+        v-if="option.options.cssStyle"
       >
         <dynamicForm
           ref="formData"

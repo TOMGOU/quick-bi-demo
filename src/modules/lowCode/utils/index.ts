@@ -6,7 +6,7 @@ export const handleOptionsData = (option) => {
   }
 
   // config
-  option.config.forEach(item => {
+  option.config && option.config.forEach(item => {
     if (Object.prototype.toString.call(item) == "[object Object]") {
       params.config[item.name] = item.value
     } else if (Object.prototype.toString.call(item) == "[object Array]") {
@@ -19,12 +19,12 @@ export const handleOptionsData = (option) => {
   })
 
   // data
-  option.data.forEach(data => {
+  option.data && option.data.forEach(data => {
     params.data[data.name] = data.value
   })
 
   // cssStyle
-  option.cssStyle.forEach(style => {
+  option.cssStyle && option.cssStyle.forEach(style => {
     params.cssStyle[style.name] = style.value
   })
   return params;

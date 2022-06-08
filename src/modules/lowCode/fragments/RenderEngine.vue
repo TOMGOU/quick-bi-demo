@@ -71,7 +71,6 @@ export default class RenderEngine extends Vue {
   // 拖拽组件经过触发
   handleDragOver () {
     // TODO: 拖拽组件经过容器组件时触发高亮效果
-    console.log(123)
   }
   // 拖拽组件松手
   handleDrop (event, vm) {
