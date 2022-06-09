@@ -18,16 +18,16 @@ const options = {
         placeholder: '',
         value: '图表框',
       },
-      {
-        type: 'vue-color',
-        label: '背景颜色',
-        name: 'background',
-        required: false,
-        placeholder: '',
-        value: ''
-      },
     ],
     cssStyle: [
+      {
+        type: 'el-input-text',
+        label: '图表标题',
+        name: 'title',
+        required: false,
+        placeholder: '',
+        value: '日拍趋势图',
+      },
       {
         type: 'el-input-text',
         label: '容器宽度',

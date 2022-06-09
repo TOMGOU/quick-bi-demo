@@ -18,14 +18,6 @@ const options = {
         placeholder: '',
         value: '提示框',
       },
-      {
-        type: 'vue-color',
-        label: '背景颜色',
-        name: 'background',
-        required: false,
-        placeholder: '',
-        value: ''
-      },
     ],
     data: [
       {

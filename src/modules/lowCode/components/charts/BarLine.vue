@@ -112,6 +112,7 @@ export default class BarLine extends Vue {
 .bar-line-box {
   position: relative;
   margin: auto;
+  width: 30vw;
 }
 
 .bar-line {

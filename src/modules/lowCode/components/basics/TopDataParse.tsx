@@ -20,14 +20,6 @@ const options = {
         placeholder: '',
         value: '总览数据表格',
       },
-      {
-        type: 'vue-color',
-        label: '背景颜色',
-        name: 'background',
-        required: false,
-        placeholder: '',
-        value: ''
-      },
     ],
     data: [
       {

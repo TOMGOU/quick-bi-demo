@@ -1,6 +1,6 @@
 <template>
-  <div class="gauge-box" :style="cssStyle">
-    <chart class="gauge" ref="gaugeChart" :option="option" :theme="theme" autoresize></chart>
+  <div class="pie-box" :style="cssStyle">
+    <chart class="pie" ref="pieChart" :option="option" :theme="theme" autoresize></chart>
   </div>
 </template>
 
@@ -11,20 +11,34 @@ import * as echarts from 'echarts'
 
 @Component({
   components: {
-    chart: eCharts
+    chart: eCharts,
   }
 })
-export default class Gauge extends Vue {
+export default class Pie extends Vue {
   @Prop({ default: () => ({}) }) readonly cssStyle: any
   @Prop({ default: () => ({
     tooltip: {
       trigger: 'item'
     },
+    legend: {
+      // orient: 'horizontal',
+      top: '44%',
+      left: '83%',
+      icon: "circle",
+      itemWidth: 10,
+      itemHeight: 10,
+      itemGap: 10,
+      width: 10,
+      textStyle: {
+        color: '#fff',
+        fontSize: 12
+      },
+    },
     series: [
       {
         type: 'gauge',
-        center: ['50%', '50%'],
-        radius: '90%',
+        center: ['25%', '60%'],
+        radius: '70%',
         axisLine: {
           lineStyle: {
             width: 15,
@@ -83,6 +97,48 @@ export default class Gauge extends Vue {
           name: '关单率',
         }]
       },
+      {
+        name: '争议订单',
+        type: 'pie',
+        center: ['68%', '60%'],
+        radius: ['35%', '70%'],
+        color: ['#ffc148', '#4992ff', '#0CF9FF'],
+        data: [
+          {
+            value: 10, 
+            name: '处理中'
+          },
+          {
+            value: 5,
+            name: '支持经销店'
+          },
+          {
+            value: 10,
+            name: '支持车商'
+          },
+        ],
+        itemStyle: {
+          color: '#ff5a5a',
+          normal: {
+            label: {
+              textStyle: {
+                color: '#000',
+              }
+            }
+          },
+        },
+        label: {
+          show: true,
+          color: '#fff',
+          normal: {
+            formatter: '{c}',
+            position:'inside'
+          },
+          itemStyle: {
+            color: '#ff5a5a'
+          }
+        },
+      }
     ]
   }) }) readonly option: any
   private theme = require('../../theme/index.json')
@@ -90,19 +146,19 @@ export default class Gauge extends Vue {
   @Watch('option', { immediate: true, deep: true })
   handleSetOption () {
     // @ts-ignore
-    this.$refs.gaugeChart && this.$refs.gaugeChart.setOption(this.option, true)
+    this.$refs.pieChart && this.$refs.pieChart.setOption(this.option, true)
   }
 }
 </script>
 
 <style lang="less" scoped>
-.gauge-box {
+.pie-box {
   position: relative;
   width: 50%;
   height: 100%;
 }
 
-.gauge {
+.pie {
   width: 90%;
   height: 95%;
 }

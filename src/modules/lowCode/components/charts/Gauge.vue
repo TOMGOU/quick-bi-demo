@@ -1,12 +1,22 @@
-import { Component, Vue } from 'vue-property-decorator';
-import Gauge from './Gauge.vue'
-import store from '@/vuex/store'
+<template>
+  <div class="gauge-box" :style="cssStyle">
+    <chart class="gauge" ref="gaugeChart" :option="option" :theme="theme" autoresize></chart>
+  </div>
+</template>
 
-const option = {
-  cssStyle: {
-    width: '50%',
-  },
-  option: {
+<script lang="tsx">
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import eCharts from 'vue-echarts'
+import * as echarts from 'echarts'
+
+@Component({
+  components: {
+    chart: eCharts
+  }
+})
+export default class Gauge extends Vue {
+  @Prop({ default: () => ({}) }) readonly cssStyle: any
+  @Prop({ default: () => ({
     tooltip: {
       trigger: 'item'
     },
@@ -74,51 +84,27 @@ const option = {
         }]
       },
     ]
+  }) }) readonly option: any
+  private theme = require('../../theme/index.json')
+
+  @Watch('option', { immediate: true, deep: true })
+  handleSetOption () {
+    console.log(this.option)
+    // @ts-ignore
+    this.$refs.gaugeChart && this.$refs.gaugeChart.setOption(this.option, true)
   }
 }
+</script>
 
-type OptionType = any
-
-@Component({
-  components: {
-    Gauge,
-  }
-})
-class GaugeParse extends Vue {
-
-  static option: OptionType = option
-
-  render (h, section, children) {
-    const _propsOn = {
-      nativeOn: {
-        click: e => {
-          e.stopPropagation()
-          store.dispatch('biCharts/setSelectedType', {
-            selectedType: 'GaugeParse'
-          })
-          store.dispatch('biCharts/setUuid', {
-            uuid: section.section.uuid,
-          })
-        }
-      },
-      props: {
-        option: section.section.option.option,
-        cssStyle: section.section.option.cssStyle,
-      }
-    }
-    
-    return (
-      // @ts-ignore
-      <Gauge
-        { ..._propsOn }
-      ></Gauge>
-    )
-  }
+<style lang="less" scoped>
+.gauge-box {
+  position: relative;
+  width: 50%;
+  height: 100%;
 }
 
-// @ts-ignore
-GaugeParse.des = '仪表盘'
-// @ts-ignore
-GaugeParse.icon = 'lx-icon-steering-wheel'
-
-export default GaugeParse
+.gauge {
+  width: 90%;
+  height: 95%;
+}
+</style>

@@ -18,14 +18,6 @@ const options = {
         placeholder: '',
         value: '横向容器',
       },
-      {
-        type: 'vue-color',
-        label: '背景颜色',
-        name: 'background',
-        required: false,
-        placeholder: '',
-        value: ''
-      },
     ],
     cssStyle: [
       {

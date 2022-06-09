@@ -80,7 +80,7 @@ export default class ConfigPanel extends Vue {
 
     &__item {
       margin: 2px 5px;
-      padding: 10px 0;
+      padding: 5px 0;
       border-radius: 18px;
       text-align: center;
     }

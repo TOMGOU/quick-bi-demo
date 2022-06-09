@@ -117,7 +117,7 @@ export default class PublicSession extends Vue {
   }
 
   async handleSave () {
-    const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.postChartsConfig({ data: JSON.stringify(this.jsonSchema) }) || {}
+    const { code = -1, data = {}, message = '' } = await this.$rest.lowCode.postChartsConfig({ data: JSON.stringify(this.jsonSchema) }) || {}
     console.log({ id: data.id, value: this.jsonSchema })
   }
 }

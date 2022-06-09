@@ -52,7 +52,7 @@ export default class ChartBox extends Vue {
     align-items: center; 
     font-size: 20px;
     color: #0cf9ff;
-    padding-left: 50px;
+    padding-left: 20px;
     vertical-align: middle;
     font-weight: bold;
     text-align: left;

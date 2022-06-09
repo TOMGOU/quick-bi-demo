@@ -36,14 +36,6 @@ const options = {
         placeholder: '',
         value: '地图',
       },
-      {
-        type: 'vue-color',
-        label: '背景颜色',
-        name: 'background',
-        required: false,
-        placeholder: '',
-        value: ''
-      },
     ],
     data: [
       {

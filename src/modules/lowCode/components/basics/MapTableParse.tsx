@@ -3,43 +3,6 @@ import MapTable from './MapTable.vue'
 import store from '@/vuex/store'
 import { handleOptionsData } from '../../utils'
 
-const option = {
-  cssStyle: {
-    bottom: '0px',
-    right: '0px'
-  },
-  option: {
-    sessionName: '河南专场',
-    tableData: [
-      {
-        store_name: '经销店1',
-        auctions: '500',
-        auction_rate: '70%'
-      },
-      {
-        store_name: '经销店2',
-        auctions: '500',
-        auction_rate: '70%'
-      },
-      {
-        store_name: '经销店3',
-        auctions: '500',
-        auction_rate: '70%'
-      },
-      {
-        store_name: '经销店4',
-        auctions: '500',
-        auction_rate: '70%'
-      },
-      {
-        store_name: '经销店5',
-        auctions: '500',
-        auction_rate: '70%'
-      },
-    ]
-  }
-}
-
 const options = {
   code: 'MapTips',
   type: 'container',
@@ -54,14 +17,6 @@ const options = {
         required: false,
         placeholder: '',
         value: '提示框',
-      },
-      {
-        type: 'vue-color',
-        label: '背景颜色',
-        name: 'background',
-        required: false,
-        placeholder: '',
-        value: ''
       },
     ],
     data: [

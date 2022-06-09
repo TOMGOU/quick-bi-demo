@@ -98,19 +98,19 @@ export default class PublicSession extends Vue {
   private mapData: any = [
     {
       title: '今日上拍量',
-      value: 0
+      value: 2000
     },
     {
       title: '今日店均上拍量',
-      value: 0
+      value: 35
     },
     {
       title: '本月上拍台数',
-      value: 0
+      value: 6000
     },
     {
       title: '本月店均成交台数',
-      value: 0
+      value: 860
     },
   ]
   private tableData: any = [
@@ -156,9 +156,10 @@ export default class PublicSession extends Vue {
     this.initOption6()
     this.initOption7()
     this.initOption8()
-    // await this.fetchData()
-    // this.timer = setInterval(this.fetchData, 60000)
-    // this.handleSetTimer()
+    this.handleChangeSession(true)
+    this.timer = setInterval(() => {
+      this.handleChangeSession(true)
+    }, 3000)
   }
 
   async fetchData () {
@@ -221,92 +222,132 @@ export default class PublicSession extends Vue {
   /**
    * 场次切换
    */
-  async handleChangeSession (bool) {
-    const lens = this.sessions.length
-    this.currentIndex = bool ? (this.currentIndex + 1) % lens : (this.currentIndex - 1 + lens) % lens
-    this.sessionName = this.sessions[this.currentIndex].name
-    
-    const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.getPublicSessionData({ id: this.sessions[this.currentIndex].id }) || {}
-    if (code !== 0) return
-
+  handleChangeSession (bool) {
+    const test = [
+      {
+        name: '河南专场',
+        value: 5000,
+        rate: '70%',
+        province: ['河南省']
+      },
+      {
+        name: '华南专场',
+        value: 5000,
+        rate: '70%',
+        province: ['广东省', '广西壮族自治区', '四川省', '湖南省', '贵州省', '重庆市', '海南省']
+      },
+      {
+        name: '华北专场',
+        value: 5000,
+        rate: '70%',
+        province: ['湖北省', '江西省', '山东省', '河北省', '山西省', '陕西省', '甘肃省', '宁夏回族自治区', '内蒙古自治区']
+      },
+      {
+        name: '华西专场',
+        value: 5000,
+        rate: '70%',
+        province: ['云南省', '新疆维吾尔自治区', '西藏自治区', '青海省']
+      },
+      {
+        name: '华东专场',
+        value: 5000,
+        rate: '70%',
+        province: ['浙江省', '福建省', '安徽省', '江苏省', '上海市']
+      }
+    ]
+    const len = test.length
+    this.currentIndex = bool ? (this.currentIndex + 1) % len : (this.currentIndex - 1 + len) % len
+    this.sessionName = test[this.currentIndex].name
+    this.sessionAuctions = +(Math.random() * 5000).toFixed(0) + 1000
+    this.sessionAuctionRate = (Math.random() * 100).toFixed(1) + '%'
     // 中央地图数据更新
-    this.sessionAuctions = data.global_auctions.session_auctions
-    this.sessionAuctionRate = data.global_auctions.session_auction_rate + '%'
-    this.option2.series[0].data = data.global_auctions.provinces.map(item => ({name: item, itemStyle: myItemStyle}))
+    this.option2.series[0].data = test[this.currentIndex].province.map(item => ({name: item, itemStyle: myItemStyle}))
     this.mapData = [
       {
         title: '今日上拍量',
-        value: data.global_auctions.today_auctions
+        value: +(Math.random() * 10000).toFixed(0) + 5000
       },
       {
         title: '今日店均上拍量',
-        value: data.global_auctions.today_auctions_per_store
+        value: +(Math.random() * 100).toFixed(0) + 10
       },
       {
         title: '本月上拍台数',
-        value: data.global_auctions.month_auctions
+        value: +(Math.random() * 5000).toFixed(0) + 1000
       },
       {
         title: '本月店均成交台数',
-        value: data.global_auctions.month_transactions_per_store
+        value: +(Math.random() * 3000).toFixed(0) + 1000
       },
     ]
-    this.tableData = data.global_auctions.top5
+    this.tableData = [
+      {
+        store_name: '经销店1',
+        auctions: (Math.random() * 900).toFixed(0),
+        auction_rate: (Math.random() * 100).toFixed(0) + '%'
+      },
+      {
+        store_name: '经销店2',
+        auctions: (Math.random() * 900).toFixed(0),
+        auction_rate: (Math.random() * 100).toFixed(0) + '%'
+      },
+      {
+        store_name: '经销店3',
+        auctions: (Math.random() * 900).toFixed(0),
+        auction_rate: (Math.random() * 100).toFixed(0) + '%'
+      },
+      {
+        store_name: '经销店4',
+        auctions: (Math.random() * 900).toFixed(0),
+        auction_rate: (Math.random() * 100).toFixed(0) + '%'
+      },
+      {
+        store_name: '经销店5',
+        auctions: (Math.random() * 900).toFixed(0),
+        auction_rate: (Math.random() * 100).toFixed(0) + '%'
+      },
+    ]
 
     // 日拍趋势图数据更新
-    this.option1.xAxis.data = data.daily_auctions_trend.dates
-    this.option1.series[0].data = data.daily_auctions_trend.auctions
-    this.option1.series[1].data = data.daily_auctions_trend.solds
-    this.option1.series[2].data = data.daily_auctions_trend.sold_rates
+    this.option1.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
+    this.option1.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option1.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
 
     // 关闭订单及争议订单图数据更新
-    this.closedOrder = data.closed_and_argued_orders.closed_order.total
-    this.closedOrderGrowthRate = data.closed_and_argued_orders.closed_order.growth_rate
-    this.arguedOrder = data.closed_and_argued_orders.argued_order.total
-    this.arguedOrderGrowthRate = data.closed_and_argued_orders.argued_order.growth_rate
-    this.option3.series[0].data[0].value = data.closed_and_argued_orders.closed_order.closed_rate
+    this.option3.series[0].data[0].value = (Math.random() * 100).toFixed(0)
     this.option3.series[1].data = [
-      {value: data.closed_and_argued_orders.argued_order.in_process_orders, name: '处理中'},
-      {value: data.closed_and_argued_orders.argued_order.support_dealer_orders, name: '支持车商'},
-      {value: data.closed_and_argued_orders.argued_order.support_store_orders, name: '支持经销店'},
+      {value: (Math.random() * 50).toFixed(0), name: '处理中'},
+      {value: (Math.random() * 50).toFixed(0), name: '支持经销店'},
+      {value: (Math.random() * 50).toFixed(0), name: '支持车商'},
     ]
 
     // 周成交趋势图数据更新
-    this.option4.xAxis.data = data.weekly_transactions_trend.dates
-    this.option4.series[0].data = data.weekly_transactions_trend.auctions
-    this.option4.series[1].data = data.weekly_transactions_trend.solds
-    this.option4.series[2].data = data.weekly_transactions_trend.transactions
-    this.option4.series[3].data = data.weekly_transactions_trend.transaction_rates
+    this.option4.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
+    this.option4.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option4.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option4.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
 
     // 月成交率趋势图数据更新
-    this.option5.xAxis.data = data.monthly_transactions_trend.dates
-    this.option5.series[0].data = data.monthly_transactions_trend.auctions
-    this.option5.series[1].data = data.monthly_transactions_trend.solds
-    this.option5.series[2].data = data.monthly_transactions_trend.matches
-    this.option5.series[3].data = data.monthly_transactions_trend.transaction_rates
+    this.option5.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
+    this.option5.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option5.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option5.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
 
     // 周毛利、毛利率趋势图数据更新
-    this.option6.xAxis.data = data.weekly_gross_profit_and_rate_trend.dates
-    this.option6.series[0].data = data.weekly_gross_profit_and_rate_trend.gross_profits
-    this.option6.series[1].data = data.weekly_gross_profit_and_rate_trend.gross_profit_rates
-    this.option6.series[2].data = data.weekly_gross_profit_and_rate_trend.month_gross_profit_rates
+    this.option6.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
+    this.option6.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option6.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
 
     // 车商活跃趋势图数据更新
-    this.option7.xAxis.data = data.dealers_activity_trend.dates
-    this.option7.series[0].data = data.dealers_activity_trend.monthly_visitors
-    this.option7.series[1].data = data.dealers_activity_trend.monthly_participants
-    this.option7.series[2].data = data.dealers_activity_trend.monthly_bidders
-    this.option7.series[3].data = data.dealers_activity_trend.weekly_visitors
-    this.option7.series[4].data = data.dealers_activity_trend.weekly_participants
-    this.option7.series[5].data = data.dealers_activity_trend.weekly_bidders
+    this.option7.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
+    this.option7.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option7.series[2].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option7.series[3].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
+    this.option7.series[4].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
 
     // 月成交率趋势图数据更新
-    this.option8.yAxis.data = data.monthly_gross_profit_and_rate_trend.dates
-    this.option8.series[0].data = data.monthly_gross_profit_and_rate_trend.gross_profits
-    this.option8.series[1].data = data.monthly_gross_profit_and_rate_trend.gross_profit_rates
-
-    // 关闭 loading 效果
-    this.loading = false
+    this.option8.series[0].data = [(Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0), (Math.random() * 300).toFixed(0)]
+    this.option8.series[1].data = [(Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0), (Math.random() * 100).toFixed(0)]
   }
 
   /**
@@ -465,7 +506,8 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            formatter: '{c}%',
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -614,7 +656,8 @@ export default class PublicSession extends Vue {
         },
         detail: {
           valueAnimation: true,
-          formatter: value => value === 0 ? `${value}%` : `${value.toFixed(1)}%`,
+          // formatter: value => value === 0 ? `${value}%` : `${value.toFixed(1)}%`,
+          formatter: '{c}%',
           textStyle:{
             fontSize: this.fontSize,
             color: '#ff5a5a'
@@ -820,7 +863,8 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            formatter: '{c}%',
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -986,7 +1030,8 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            formatter: '{c}%',
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -1117,7 +1162,8 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            formatter: '{c}%',
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,
@@ -1487,7 +1533,8 @@ export default class PublicSession extends Vue {
           label: {
             show: true,
             position: 'top',
-            formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            // formatter: params => params.value === 0 ? `${params.value}%` : `${params.value.toFixed(1)}%`,
+            formatter: '{c}%',
             textStyle: {
               align: 'center',
               fontSize: this.fontSize,

@@ -1,25 +1,13 @@
-import { Component, Vue, Inject } from 'vue-property-decorator';
-import BarLine from './BarLine.vue'
-import * as echarts from 'echarts/core'
+import { Component, Vue } from 'vue-property-decorator';
+import Gauge from './Gauge.vue'
 import store from '@/vuex/store'
 import { handleOptionsData } from '../../utils'
-import {
-  setOptionsTitle,
-  setOptionsX,
-  setOptionsY,
-  setOptionsTop,
-  setOptionsBar,
-  setOptionsLegend,
-  setOptionsTooltip,
-  setOptionsMargin,
-  staticDataFn
-} from '../../tools'
 const axios = require('axios');
 
 const options = {
-  code: 'barLineChart',
+  code: 'gaugeChart',
   type: 'chart',
-  label: '混合图',
+  label: '仪表盘',
   icon: 'lx-icon-data',
   options: {
     config: [
@@ -29,7 +17,7 @@ const options = {
         name: 'layerName',
         required: false,
         placeholder: '',
-        value: '混合图',
+        value: '仪表盘',
       },
       [
         {
@@ -665,18 +653,6 @@ const options = {
             },
           ],
         },
-        {
-          name: '自定义配色',
-          list: [
-            {
-              type: 'customColor',
-              label: '',
-              name: 'customColor',
-              required: false,
-              value: [{color: '#00F4FFFF'}, {color: '#e68b55'}],
-            },
-          ],
-        },
       ],
     ],
     data: [
@@ -720,68 +696,20 @@ const options = {
         required: false,
         placeholder: '',
         reverseStamp: 'dynamicData',
-        value: [
-          {
-            bar1: 148,
-            bar2: 508,
-            line1: 14,
-            name: 'Mon'
-          },
-          {
-            bar1: 148,
-            bar2: 408,
-            line1: 64,
-            name: 'Tue'
-          },
-          {
-            bar1: 148,
-            bar2: 608,
-            line1: 24,
-            name: 'Wed'
-          },
-          {
-            bar1: 348,
-            bar2: 208,
-            line1: 84,
-            name: 'Thu'
-          },
-          {
-            bar1: 248,
-            bar2: 108,
-            line1: 64,
-            name: 'Fri'
-          },
-          {
-            bar1: 748,
-            bar2: 108,
-            line1: 24,
-            name: 'Sat'
-          },
-          {
-            bar1: 548,
-            bar2: 168,
-            line1: 54,
-            name: 'Sun'
-          },
-        ]
+        value: [{
+          value: 70,
+          name: '关单率',
+        }]
       },
     ],
     cssStyle: [
-      {
-        type: 'el-input-text',
-        label: '图表标题',
-        name: 'title',
-        required: false,
-        placeholder: '',
-        value: '日拍趋势图',
-      },
       {
         type: 'el-input-text',
         label: '图表宽度',
         name: 'width',
         required: false,
         placeholder: '',
-        value: '30vw',
+        value: '100%',
       },
       {
         type: 'el-input-text',
@@ -789,7 +717,7 @@ const options = {
         name: 'height',
         required: false,
         placeholder: '',
-        value: 'calc((100vh - 110px) / 3)',
+        value: '100%',
       },
     ]
   }
@@ -799,168 +727,90 @@ type OptionType = any
 
 @Component({
   components: {
-    BarLine,
+    Gauge,
   }
 })
-class BarLineParse extends Vue {
+class GaugeParse extends Vue {
 
   static options: OptionType = options
 
-  // 静态数据
-  staticDataFn (optionsData, option) {
-    const axis = []
-    const data = {}
-    optionsData.staticData.forEach((item, index) => {
-      axis[index] = item.name
-      Object.keys(item).forEach(key => {
-        if (!data[key]) {
-          data[key] = []
-        }
-        data[key][index] = item[key]
-      })
-    })
-    option.xAxis.data = axis;
-    option.series.forEach(item => {
-      item.data = data[item.alias]
-    })
-  }
-
-  // 动态获取数据
-  async dynamicDataFn (optionsData, option) {
-    // option.series = []
-    const res = await axios.get(`http://127.0.0.1:8360/api/v1/index/test`)
-    const axis = []
-    const data = {}
-    res.data.data.forEach((item, index) => {
-      axis[index] = item.name
-      Object.keys(item).forEach(key => {
-        if (!data[key]) {
-          data[key] = []
-        }
-        data[key][index] = item[key]
-      })
-    })
-    option.xAxis.data = axis;
-    option.series.forEach(item => {
-      item.data = data[item.alias]
-    })
-    // const { code = -1, data = {}, message = '' } = await this.$rest.biCharts.fetchChartData(optionsData.api)
-    // console.log({ code, data, message })
-  }
-
   render (h, section, children) {
     const options = handleOptionsData(section.section.option.options)
-    const optionsConfig: any = options.config;
-    const optionsData: any = options.data;
-    const option: any = {
-      color: ['#0cf9ff', '#0cf9ff', '#fff'],
+    const option = {
       tooltip: {
         trigger: 'item'
       },
-      xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      },
-      yAxis: [
-        {
-          type: 'value',
-          position: 'left',
-        },
-        {
-          type: 'value',
-          position: 'right',
-        }
-      ],
-      legend: {
-        data: ['蒸发量' , '上牌量', '降水量']
-      },
       series: [
         {
-          data: [120, 200, 150, 80, 70, 110, 130],
-          name: '上牌量',
-          type: 'bar',
-          alias: 'bar1',
-          yAxisIndex: 0,
-          showBackground: true,
-          backgroundStyle: {
-            color: '#0c1022'
+          type: 'gauge',
+          center: ['50%', '50%'],
+          radius: '90%',
+          axisLine: {
+            lineStyle: {
+              width: 15,
+              color: [
+                [0.3, '#0CF9FF'],
+                [0.7, '#4992ff'],
+                [1, '#ff5a5a']
+              ]
+            }
           },
-        },
-        {
-          data: [10, 20, 50, 80, 170, 180, 30],
-          name: '蒸发量',
-          type: 'bar',
-          alias: 'bar2',
-          yAxisIndex: 0,
-          showBackground: false,
-          backgroundStyle: {
-            color: '#0c1022'
+          pointer: {
+            itemStyle: {
+              color: 'auto'
+            }
           },
-          itemStyle: {
-            color: '#ff5a5a'
-          }
-        },
-        {
-          name: '降水量',
-          type: 'line',
-          alias: 'line1',
-          yAxisIndex: 1,
-          lineStyle: {
-            color: '#ffc148'
+          axisTick: {
+            distance: -15,
+            length: 8,
+            lineStyle: {
+              color: '#fff',
+              width: 1
+            }
           },
-          areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(58,77,233,0.8)'
-            }, {
-              offset: 1,
-              color: 'rgba(58,77,233,0.3)'
-            }])
+          splitLine: {
+            distance: -15,
+            length: 15,
+            lineStyle: {
+              color: '#fff',
+              width: 1
+            }
           },
-          data: [20, 20, 50, 80, 70, 10, 30],
-          label: {
-            show: true,
-            position: 'top',
-            formatter: '{c}%',
+          axisLabel: {
+            color: 'auto',
+            distance: 20,
+            fontSize: 6
+          },
+          title: {
+            show : true,
+            offsetCenter: [0, '75%'],
             textStyle: {
-              align: 'center',
-              fontSize: 14,
-              color: '#ffc148'
-            },
+              fontSize: 12,
+              color: '#ff5a5a'
+            }
           },
-        }
+          detail: {
+            valueAnimation: true,
+            formatter: value => value === 0 ? `${value}%` : `${value.toFixed(1)}%`,
+            textStyle:{
+              fontSize: 12,
+              color: '#ff5a5a'
+            },
+            offsetCenter: [0, "50%"],
+          },
+          data: [{
+            value: 70,
+            name: '关单率',
+          }]
+        },
       ]
-    }
-    // @ts-ignore
-    option.title = setOptionsTitle(optionsConfig)
-    // @ts-ignore
-    option.xAxis = { ...option.xAxis, ...setOptionsX(optionsConfig) }
-    // @ts-ignore
-    option.yAxis = setOptionsY(optionsConfig)
-    // @ts-ignore
-    option.series = setOptionsTop(optionsConfig, option.series)
-    // @ts-ignore
-    option.series = setOptionsBar(optionsConfig, option.series)
-    // @ts-ignore
-    option.legend = setOptionsLegend(optionsConfig, option.legend)
-    // @ts-ignore
-    option.tooltip = setOptionsTooltip(optionsConfig)
-    // @ts-ignore
-    option.grid = setOptionsMargin(optionsConfig)
-    if (optionsData.dataType === 'staticData') {
-      // @ts-ignore
-      this.methods.staticDataFn(optionsData, option)
-    }
-    if (optionsData.dataType === 'dynamicData') {
-      // @ts-ignore
-      this.methods.dynamicDataFn(optionsData, option)
     }
     const _propsOn = {
       nativeOn: {
         click: e => {
           e.stopPropagation()
           store.dispatch('biCharts/setSelectedType', {
-            selectedType: 'BarLineParse'
+            selectedType: 'GaugeParse'
           })
           store.dispatch('biCharts/setUuid', {
             uuid: section.section.uuid,
@@ -968,27 +818,27 @@ class BarLineParse extends Vue {
         }
       },
       props: {
+        // option: section.section.option.option,
+        // cssStyle: section.section.option.cssStyle,
         option: option,
         cssStyle: options.cssStyle,
-        // @ts-ignore
-        title: options.cssStyle.title,
       }
     }
     
     return (
       // @ts-ignore
-      <BarLine
+      <Gauge
         { ..._propsOn }
-      ></BarLine>
+      ></Gauge>
     )
   }
 }
 
 // @ts-ignore
-BarLineParse.key = 'BarLineParse'
+GaugeParse.key = 'GaugeParse'
 // @ts-ignore
-BarLineParse.des = '混合图'
+GaugeParse.des = '仪表盘'
 // @ts-ignore
-BarLineParse.icon = 'lx-icon-data'
+GaugeParse.icon = 'lx-icon-steering-wheel'
 
-export default BarLineParse
+export default GaugeParse
