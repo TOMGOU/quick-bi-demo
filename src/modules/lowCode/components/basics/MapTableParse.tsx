@@ -173,7 +173,7 @@ class MapTableParse extends Vue {
         click: e => {
           e.stopPropagation()
           store.dispatch('biCharts/setSelectedType', {
-            selectedType: 'TopDataParse'
+            selectedType: 'MapTableParse'
           })
           store.dispatch('biCharts/setUuid', {
             uuid: section.section.uuid,

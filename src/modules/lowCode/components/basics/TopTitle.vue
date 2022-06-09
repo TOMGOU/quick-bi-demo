@@ -1,5 +1,10 @@
 <template>
-  <section class="top-title" :style="cssStyle">
+  <section
+    class="top-title"
+    :style="cssStyle"
+    @dragover.prevent
+    @drop.stop="handleDrop"
+  >
     <div class="top-title__title">
       {{ title }}
     </div>
@@ -29,6 +34,7 @@ import util from '@/common/util';
 export default class TopTitle extends Vue {
   @Prop({default: '小雷拍数据监控'}) readonly title: string
   @Prop({default: '河南专场'}) readonly sessionName: string
+  @Prop({default: () => ({})}) readonly jsonSchema: any
   @Prop({default: () => ({})}) readonly cssStyle: any
   private timer = null
   private dataTime = ''
@@ -45,6 +51,10 @@ export default class TopTitle extends Vue {
 
   handleFullScreen() {
     this.$emit('handleFullScreen')
+  }
+
+  handleDrop (e) {
+    this.$emit('drop', e, this)
   }
 }
 </script>

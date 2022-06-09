@@ -15,6 +15,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 @Component
 export default class TopData extends Vue {
   @Prop({default: () => ([])}) readonly mapData: any[]
+  @Prop({default: () => ({})}) readonly jsonSchema: any
   @Prop({default: () => ({})}) readonly cssStyle: any
   private copyData = this.mapData.map((item, index) => {
     return {

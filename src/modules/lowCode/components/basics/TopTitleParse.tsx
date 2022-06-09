@@ -78,6 +78,10 @@ class TopTitleParse extends Vue {
           })
         }
       },
+      on: {
+        dragover: section.handleDrop,
+        drop: section.handleDrop
+      },
       props: {
         jsonSchema: section.section,
         cssStyle: options.cssStyle,
