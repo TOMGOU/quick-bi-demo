@@ -11,8 +11,8 @@
         <div class="public-session__map-box">
           <top-data :mapData="mapData"></top-data>
           <Map :option="option2"></Map>
-          <map-tips :sessionName="sessionName" :sessionAuctions="sessionAuctions" :sessionAuctionRate="sessionAuctionRate"></map-tips>
-          <map-table :tableData="tableData" :sessionName="sessionName" :bool="!!timer" @handleChangeSession="handleChangeSession" @handleTriggerAuto="handleTriggerAuto"></map-table>
+          <map-tips :tipsData="{ ...tipsData, sessionName }"></map-tips>
+          <map-table :mapData="{ tableData, sessionName }" :bool="!!timer" @handleChangeSession="handleChangeSession" @handleTriggerAuto="handleTriggerAuto"></map-table>
         </div>
         <bar-line :option="option3" :loading="loading" title="关闭订单及争议订单">
           <div class="pie-title" v-if="!loading">
@@ -83,8 +83,10 @@ export default class PublicSession extends Vue {
   private loading = true
   private currentIndex = 0
   private sessionName = '--'
-  private sessionAuctions = 0
-  private sessionAuctionRate = '0%'
+  private tipsData = {
+    sessionAuctions: 0,
+    sessionAuctionRate: '',
+  }
   private mapHLData = []
   private option1: any = {}
   private option2: any = {}
@@ -113,7 +115,8 @@ export default class PublicSession extends Vue {
       value: 860
     },
   ]
-  private tableData: any = [
+
+  private tableData = [
     {
       store_name: '--',
       auctions: '0',
@@ -138,8 +141,9 @@ export default class PublicSession extends Vue {
       store_name: '--',
       auctions: '0',
       auction_rate: '0%'
-    },
+    }
   ]
+  
   private sessions = []
   private closedOrder = 0
   private closedOrderGrowthRate = '--'
@@ -258,8 +262,8 @@ export default class PublicSession extends Vue {
     const len = test.length
     this.currentIndex = bool ? (this.currentIndex + 1) % len : (this.currentIndex - 1 + len) % len
     this.sessionName = test[this.currentIndex].name
-    this.sessionAuctions = +(Math.random() * 5000).toFixed(0) + 1000
-    this.sessionAuctionRate = (Math.random() * 100).toFixed(1) + '%'
+    this.tipsData.sessionAuctions = +(Math.random() * 5000).toFixed(0) + 1000
+    this.tipsData.sessionAuctionRate = (Math.random() * 100).toFixed(1) + '%'
     // 中央地图数据更新
     this.option2.series[0].data = test[this.currentIndex].province.map(item => ({name: item, itemStyle: myItemStyle}))
     this.mapData = [
